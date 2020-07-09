@@ -1,4 +1,14 @@
-{
+var cmd = 'pm2 start server/index --name znxy-result -- port=xxxx  可指定端口' // 启动命令
+
+// 使用上面的命令启动时 需要在node server.js 中解析对应参数
+const param = process.argv.slice(2)
+const argvs = [];
+param.map(v => {
+    if (v.split("=").length === 2) argvs[v.split("=")[0]] = v.split("=")[1]
+})
+port = param.port
+// 配置文件启动的配置说明
+const pm2config = {
     "apps": {
         "name": "wuwu",                             // 项目名
         "script": "./bin/www",                      // 执行文件

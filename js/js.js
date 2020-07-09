@@ -55,7 +55,14 @@
             } else {
                 script.onload = function(){
                     callback();
+                    script.onload = null;
+                    script.onerror = null;
                 }
+                script.onerror = function () {
+                    alert('加载失败！')
+                    script.onload = null;
+                    script.onerror = null;
+                };
             }
         }
     }

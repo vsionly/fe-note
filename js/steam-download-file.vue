@@ -7,7 +7,7 @@ export default {
     name: 'download',
     methods: {
         // 使用get请求方式直接进行下载（最简单的方法）
-        getOpen{
+        getOpen() {
             window.open(`${url}?${qs.stringify(param)}`, '_blank');
         },
         // 模拟form表单post方式获取下载文件数据
