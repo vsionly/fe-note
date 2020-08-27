@@ -8,7 +8,8 @@ export default {
     methods: {
         // 使用get请求方式直接进行下载（最简单的方法）
         getOpen() {
-            window.open(`${url}?${qs.stringify(param)}`, '_blank');
+            // window.open(`${url}?${qs.stringify(param)}`, '_blank');
+            this.$refs.iframe.contentWindow.open(`http://211.154.163.112:6152/sniff_package_download?rule_name=${this.activeName}`, '_self'); // 当前页面实现下载
         },
         // 模拟form表单post方式获取下载文件数据
         formPost(i) {
@@ -48,7 +49,7 @@ export default {
               reader.readAsDataURL(blob);
               reader.onload = (e) => {
                 const a = document.createElement('a');
-                a.download = `文件名称.zip`;
+                // a.download = `文件名称.zip`;
                 // 后端设置的文件名称在res.headers的 "content-disposition": "form-data; name=\"attachment\"; filename=\"20181211191944.zip\"",
                 a.href = e.target.result;
                 document.body.appendChild(a);

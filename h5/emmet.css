@@ -1,0 +1,158 @@
+/* css */
+/*边框*/
+.bd1-s#c{
+    border: 1px solid  #ccc;
+}
+
+.bb1-s#c{
+    border-bottom: 1px solid  #ccc;
+}
+.bd10-s-t{
+    border: 10px solid transparent;
+}
+.brs8{
+    border-radius: 8px;
+}
+/*盒模型*/
+.bzbb{
+    box-sizing: border-box
+}
+
+.cu{
+    cursor: pointer
+}
+
+/*文本对齐方式*/
+.tc{
+    text-align: center;
+}
+.tar{
+    text-align: right
+}
+/*text-align: left; 在提示中有直接tab选第一个 快捷键生成的不对 正常来说 不需要这个*/
+
+/*文本超出显示*/
+.ov,.oh{
+    overflow: hidden;
+}
+.w-now{
+    white-space: nowrap;
+}
+/*定位*/
+.poa,.psa{
+    position: absolute
+}
+.p-r{
+    position: relative
+}
+/* display */
+.df{
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+}
+.d-f{
+}
+/* @f */
+@font-face {
+    font-family:songti;
+    src:url();
+}
+
+/* @f+ */
+@font-face {
+    font-family: 'FontName';
+    src: url('FileName.eot');
+    src: url('FileName.eot?#iefix') format('embedded-opentype'),
+         url('FileName.woff') format('woff'),
+         url('FileName.ttf') format('truetype'),
+         url('FileName.svg#FontName') format('svg');
+    font-style: normal;
+    font-weight: normal;
+}
+/*
+ * 输入非W3C标准的CSS属性，Emmet会自动加上供应商前缀
+ * 属性前加上“-”符号，也可以为该属性加上前缀
+ * 如果不希望加上所有前缀，可以使用缩写来指定，比如-wm-trf表示只加上-webkit和-moz前缀：
+ * w 表示 -webkit-
+ * m 表示 -moz-
+ * s 表示 -ms-
+ * o 表示 -o-
+ */
+.trs{
+    -webkit-transition: prop time;
+    -o-transition: prop time;
+    transition: prop time;
+}
+.-fz{
+    -webkit-font-size: 18;
+    -moz-font-size: 18;
+    -ms-font-size: 18;
+    -o-font-size: 18;
+    font-size: 18;
+}
+.-wm-trf{
+    -webkit-transform: 12;
+    -moz-transform: 12;
+    transform: 12;
+}
+.jcsb{
+ justify-content:space-between;
+}
+
+/* html */
+/*
+a:link
+<a href="http://"></a>
+
+base
+<base href="" />
+
+link
+<link rel="stylesheet" href=""/>
+
+link:favicon
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+
+meta:utf
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+
+
+缩写：form
+<form action=""></form>
+缩写：form:get
+<form action="" method="get"></form>
+缩写：form:post
+<form action="" method="post"></form>
+
+缩写：input:h
+别名：input:hidden
+<input type="hidden" name="" />
+
+缩写：input:text, input:t
+别名：inp
+<input type="text" name="" id="" />
+
+缩写：input:search
+别名：inp[type=search]
+<input type="search" name="" id="" />
+
+缩写：input:p
+别名：input:password
+<input type="password" name="" id="" />
+
+缩写：btn:b
+别名：button[type=button]
+<button type="button"></button>
+
+缩写：btn:r
+别名：button[type=reset]
+<button type="reset"></button>
+
+缩写：btn:s
+别名：button[type=submit]
+<button type="submit"></button>
+
+*/
