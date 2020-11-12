@@ -1,3 +1,7 @@
+/*
+ * excel表格解析库
+ * 把excel表格转换为数组
+ */
 const fs = require('fs');
 const xlsx = require('node-xlsx');
 
