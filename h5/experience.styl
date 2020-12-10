@@ -1,0 +1,42 @@
+/* video 屏蔽下载按钮
+ * <video loop controls id="largeVideo" autoplay controlslist="nodownload">
+ */
+video::-internal-media-controls-download-button {
+    display:none;
+}
+video::-webkit-media-controls-enclosure {
+    overflow:hidden;
+}
+video::-webkit-media-controls-panel {
+    width: calc(100% + 30px);
+}
+
+
+/*
+ * 最多显示两行，省略号
+ */
+.ellipsis2
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical
+
+/*
+ * chrome下自定义滚动条
+ */
+section
+    height 100%
+    padding 24px 24px 24px 204px
+    overflow auto
+    &::-webkit-scrollbar /*滚动条整体样式*/
+        width: 6px;     /*高宽分别对应横竖滚动条的尺寸*/
+        // height: 5px;
+    &::-webkit-scrollbar-thumb  /*滚动条整体样式*/
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #bababa;
+    &::-webkit-scrollbar-thumb:hover  /*滚动条整体样式*/
+        background: #999;
