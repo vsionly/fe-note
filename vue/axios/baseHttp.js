@@ -21,7 +21,18 @@ const instance = axios.create({
 
 // 请求拦截器
 instance.interceptors.request.use(config => {
-
+    if (config.xx) {
+        console.log('')
+    } else {
+        /*
+         *  如果请求被阻断 需要在调用api的时候 加catch 函数
+         *  .catch(err => {
+                console.log(err)
+            })
+         */
+        vm.$message.error('登录状态已失效，请重新登陆！')
+        return Promise.reject('登录状态已失效，请重新登陆！')
+    }
     return config
 
 }, error => {

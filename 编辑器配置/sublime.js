@@ -19,3 +19,5 @@ Stylus // vue文件中 stylus 的语法高亮
 Emmet // 快速编写html、css、stylus、sass、scss
 
 软件出现问题的解决方案 //  删除 C:\Users\liwsh\AppData\Roaming\Sublime Text 3的所有相关文件
+
+'Packages\JavaScript Completions\sublime-completions' // 修改javascript completions插件的生成模板

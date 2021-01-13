@@ -1,3 +1,4 @@
+<!-- 页面保存为图片 -->
 <template>
     <div class="main" :class="{vhide: showPic}" v-if="loaded">
         <div class="main-body">

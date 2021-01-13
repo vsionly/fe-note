@@ -1,5 +1,7 @@
 var cmd = 'pm2 start server/index --name znxy-result -- port=xxxx ' // 可指定端口
 var cmd = 'pm2 start server/index --name znxy-result -- - env=dev ' // 带参数
+var cmd = 'pm2 start server/index.js --name jiandang -- --port=8882' // 配合ynn框架使用
+
 
 // 使用上面的命令启动时 需要在node server.js 中解析对应参数
 const param = process.argv.slice(2)

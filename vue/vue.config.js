@@ -1,4 +1,6 @@
 module.exports = {
+    // 配置打包后静态资源存放的目录
+    assetsDir: 'static',
     // 全局引入stylus变量
     css: {
         loaderOptions: {
