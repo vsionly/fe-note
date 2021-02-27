@@ -86,6 +86,10 @@
     -o-transition: prop time;
     transition: prop time;
 }
+.tf {
+    transform: translateY();
+}
+
 .-fz{
     -webkit-font-size: 18;
     -moz-font-size: 18;

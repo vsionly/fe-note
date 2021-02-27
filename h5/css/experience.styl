@@ -1,3 +1,24 @@
+/*
+ *  用3D变形来开启GPU加速
+ */
+main{
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+// 动画过程有闪烁（通常发生在动画开始的时候），可以尝试下面的Hack：
+{
+    webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+    -webkit-perspective: 1000;
+    -moz-perspective: 1000;
+    -ms-perspective: 1000;
+    perspective: 1000;
+}
 /* video 屏蔽下载按钮
  * <video loop controls id="largeVideo" autoplay controlslist="nodownload">
  */
