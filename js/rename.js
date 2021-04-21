@@ -8,7 +8,7 @@ const files = fs.readdirSync('./sf');
 console.log(files)
 files.map((v, k) => {
     console.log(v, k)
-    fs.rename(`./sf/${v}`, `${k}.png`, (err) => {
+    fs.rename(`./sf/${v}`, `./rs/${k}.png`, (err) => {
         if (err) throw err
         console.log('重命名完成')
     });
