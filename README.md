@@ -44,5 +44,5 @@
     1、本机地址 http://192.168.0.122
 
 ### 内部平台
-    http://211.154.163.97:8000/insights?insight=TRENDS&interval=day&display=ActionsLineGraph&properties=%5B%5D&filter_test_accounts=false
+    1、log平台 http://211.154.163.97:8000/insights?insight=TRENDS&interval=day&display=ActionsLineGraph&properties=%5B%5D&filter_test_accounts=false
     name@zuoshouyisheng.com  lwshx9-5xx
