@@ -13,6 +13,17 @@
 	"trim_trailing_white_space_on_save": true
 }
 
+/*
+ *  跨系统开发的换行符
+ *  Windows 、unix 、linux 的断行
+ *  Windows/Dos的是 CRLF \r\n  Linux/Unix是LF \n    MacOS 是CR \r
+ */
+    统一配置为unix的换行
+    修改git配置 在拉取代码时 不转换断行符git config --global core.autocrlf false
+    编辑器也要修改为unix
+    TortoiseGit 修改配置文件 core下面的autocrlf = false
+
+
 // 需要的插件及其作用
 Vue Syntax Highlight // vue开发支持vue的语法高亮
 Stylus // vue文件中 stylus 的语法高亮

@@ -30,3 +30,12 @@ export default {
     }
 }
 </script>
+<style type="text/css" lang="stylus">
+    .svg-icon
+        width: 1em;
+        height: 1em;
+        fill: currentColor;
+        overflow: hidden;
+        vertical-align: -.15em;
+        transition: transform .4s;
+</style>

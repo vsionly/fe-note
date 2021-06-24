@@ -4,11 +4,11 @@
  * email： liwsh666@126.com
  */
 const fs = require('fs')
-const files = fs.readdirSync('./sf');
+const files = fs.readdirSync('./img');
 console.log(files)
 files.map((v, k) => {
     console.log(v, k)
-    fs.rename(`./sf/${v}`, `./rs/${k}.png`, (err) => {
+    fs.rename(`./img/${v}`, `./img/${k}.png`, (err) => {
         if (err) throw err
         console.log('重命名完成')
     });

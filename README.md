@@ -2,31 +2,6 @@
     1、书籍类
     红宝书、蝴蝶书、犀牛书、深入浅出设计模式(《Head First Design Pattern》)
 
-### wagnw
-    1、144.34.165.209 umkN3ecA9n2Lxx_xx 29166
-
-
-    2、
-        1. Log in to your Client area on https://bandwagonhost.com
-        2. Navigate to My Services menu, then click View Details
-        3. Click Login to KiwiVM Control Panel
-
-
-    3、
-        {
-            "server":"144.34.165.209",
-            "server_port":"20214",
-            "password":"xxxxx",
-            "timeout":300,
-            "method":"aes-256-cfb",
-            "fast_open":false,
-            "workers": 1
-        }
-
-
-    5、 vim /etc/shadowsocks.json
-       ssserver -c /etc/shadowsocks.json -d start
-
 ### 我的负责项目
 
     1、协和导诊
@@ -46,3 +21,10 @@
 ### 内部平台
     1、log平台 http://211.154.163.97:8000/insights?insight=TRENDS&interval=day&display=ActionsLineGraph&properties=%5B%5D&filter_test_accounts=false
     name@zuoshouyisheng.com  lwshx9-5xx
+
+### Git 命令
+```git
+    git branch --set-upstream master origin/master
+```
+
+    gwf xxx 1245.33.88.93:9991
