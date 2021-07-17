@@ -19,7 +19,7 @@ for (var i = 0; i < data.length; i++) {
 }
 var html = `
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,13 +48,27 @@ var html = `
             padding-right: 16px;
             width: 200px;
             box-sizing: border-box;
+            white-space: nowrap;
         }
         .svg-item img, .svg-item span{
             vertical-align: middle;
         }
+        #tip {
+            display: none;
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            padding: 16px;
+            margin-left: -50px;
+            color: red;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>${imgs}
+    <div id="tip">icon名字已复制！</div>
 </body>
 <script type="text/javascript">
     document.querySelector('body').onclick = (e) => {
@@ -73,6 +87,10 @@ var html = `
         input.select();
         if (document.execCommand('copy')) {
             document.execCommand('copy');
+            document.querySelector("#tip").style.display = 'block'
+            setTimeout(()=> {
+                document.querySelector("#tip").style.display = 'none'
+            }, 2000)
         }
         document.body.removeChild(input);
     }

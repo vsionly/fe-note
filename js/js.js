@@ -1,4 +1,9 @@
 /*
+ *  获取scroll的滚动高度 兼容写法
+ */
+    var scrollH = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+
+/*
  *  node服务 使用pm2传参时的参数使用方法 pm2 .... -- port=8000
  */
     let cmdArgv = {}

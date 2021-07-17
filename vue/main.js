@@ -4,7 +4,7 @@ import router from './router.js'
 import store from './store' // vuex
 import '@/common/css/index.styl' // 全局样式
 
-// 全局注册icon组件
+// 全局注册icon组件 配置vue.config.js的chainWebpack
 import SvgIcon from '@/components/SvgIcon.vue'
 Vue.component('SvgIcon', SvgIcon)
 import '@/assets/icons/index.js'
