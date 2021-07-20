@@ -28,3 +28,11 @@
 ```
 
     gwf xxx 1245.33.88.93:9991
+
+
+    https://kiwivm.64clouds.com/main-exec.php?mode=extras_shadowsocks
+    liwsh666@126.com  lwsh1985 lwsh88
+    144.34.165.209  umkN3ecA9n2L
+
+    https://kiwivm.64clouds.com/main-exec.php?mode=blacklistcheck 检测ip被封
+    https://bwh81.net/ipchange.php 更换ip

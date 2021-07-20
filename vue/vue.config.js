@@ -29,6 +29,7 @@ module.exports = {
 
     devServer: {
         open: true,
-        port: 80
+        port: 80,
+        proxy: 'http://localhost:8765' // 接口代理
     }
 }
