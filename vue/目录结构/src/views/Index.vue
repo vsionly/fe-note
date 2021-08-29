@@ -1,3 +1,4 @@
+<!-- 抽离css、js -->
 <template>
     <div></div>
 </template>

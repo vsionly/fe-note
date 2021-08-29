@@ -27,12 +27,16 @@
     git branch --set-upstream master origin/master
 ```
 
-    gwf xxx 1245.33.88.93:9991
-
+    ssserver -c /etc/shadowsocks.json -d start
 
     https://kiwivm.64clouds.com/main-exec.php?mode=extras_shadowsocks
-    liwsh666@126.com  lwsh1985 lwsh88
-    144.34.165.209  umkN3ecA9n2L
+    liwshxxx@126.com  lwsh19-5xx lwsh8=xx
+    144.34.165.209  xumkN3ecA9n2Lx
 
     https://kiwivm.64clouds.com/main-exec.php?mode=blacklistcheck 检测ip被封
     https://bwh81.net/ipchange.php 更换ip
+
+### 规划
+
+#### 单元测试
+    推荐 Node.js 后端程序用 mocha 做单元测试，前端用 jasmine + karma 做单元测试

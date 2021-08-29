@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+    <main>
+        <h3>前端优化</h3>
+        1、从输入一个URL谈起 <br>
+        2、DNS查询 <br>
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com/"> <!-- 进行DNS预查询 当用到的时候就可以直接拿到对应的IP --> <br>
+        3、建立HTTP(TCP)连接 HTTP1.0和HTTP1.1为了解决这个问题在header中加入了Connection: Keep-Alive，keep-alive的连接会保持一段时间不断开，后续的请求都会复用这一条TCP，不过由于管道化的原因也会发生队头阻塞的问题。HTTP1.1默认开启Keep-Alive，HTTP1.0可能现在不多见了<br>
+        HTTP2相对于HTTP1.1的一个主要升级是多路复用，多路复用通过更小的二进制帧构成多条数据流，交错的请求和响应可以并行传输而不被阻塞，这样就解决了HTTP1.1时复用会产生的队头阻塞的问题，同时HTTP2有首部压缩的功能，如果两个请求首部(headers)相同，那么会省去这一部分，只传输不同的首部字段，进一步减少请求的体积。Nginx开启HTTP2的方式特别容易，只需要加一句http2既可开启：
+        <br>
+        <pre>
+        server {
+         listen 443 ssl http2; # 加一句 http2.
+         server_name domain.com;
+        }
+        </pre>
+        成本低廉，效果巨大。HTTP2 <br>
+        4、HTTP缓存主要分为两种，一种是强缓存，另一种是协商缓存，都通过Headers控制 <br>
+        强缓存根据请求头的Expires和Cache-Control判断是否命中强缓存 <br>
+        服务器响应中会携带ETag和Last-Modified，Last-Modified <br>
+        协商缓存比强缓存稍慢，因为还是会发送请求到服务器进行确认。 <br>
+        CDN会把源站的资源缓存到CDN服务器，当用户访问的时候就会从最近的CDN服务器拿取资源而不是从源站拿取，这样做的好处是分散了压力，同时也会提升返回访问速度和稳定性 <br>
+        5、压缩  合理的压缩资源可以有效减少传输体积，减少传输体积的结果就是用户更快的拿到资源开始解析 <br>
+        浏览器在发起请求时会在headers中携带accept-encoding: gzip, deflate, br，告知服务器客户端可以接受的压缩算法，之后响应资源会在响应头中携带content-encoding: gzip告知本文件的压缩算法。 <br>
+        GZIP是非常常用的压缩算法，现代客户端都会支持，你可以在上传文件时就上传一份压缩后的文件，也可以让Nginx动态压缩。 <br>
+
+        6、进行页面渲染 <br>
+        关键渲染路径是浏览器将HTML/CSS/JS转换为屏幕上看到的像素内容所经过的一系列步骤。浏览器得到HTML后会开始解析DOM树，CSS资源的下载不会阻塞解析DOM，但是也要注意，如果CSS未下载解析完成是会阻塞最终渲染的。从Performance面板中可以清晰的看到浏览器如何解析HTML的 <br>
+        得到HTML后首先会解析HTML，然后解析样式，计算样式，绘制图层等等操作，JS脚本运行，之后可能会重复这一步骤。 <br>
+
+        <h4>在这里前端可以做的事情多了起来，接下来自顶向下说起。渲染页面</h4>
+        7、预加载/预连接内容  <br>
+        和前面说的DNS预查询一样，可以将即将要用到的资源或者即将要握手的地址提前告知浏览器让浏览器利用还在解析HTML计算样式的时间去提前准备好。 <br>
+
+        使用link的preload属性预加载一个资源。 as属性可以指定预加载的类型，除了style还支持很多类型，常用的一般是style和script，css和js。其他的类型可以查看文档:preload
+        <pre>
+        <link rel="preload" href="style.css" as="style">
+        </pre>
+        prefetch <br>
+        prefetch和preload差不多，prefetch是一个低优先级的获取，通常用在这个资源可能会在用户接下来访问的页面中出现的时候。当然对当前页面的要用preload，不要用prefetch，可以用到的一个场景是在用户鼠标移入a标签时进行一个prefetch。prefetch <br>
+        preconnect <br>
+        preconnect和dns-prefetch做的事情类似，提前进行TCP，SSL握手，省去这一部分时间，基于HTTP1.1(keep-alive)和HTTP2(多路复用)的特性，都会在同一个TCP链接内完成接下来的传输任务。 <br>
+
+        8、 将script放在文档底部，尽可能推后脚本的执行时机，不过并不完全可控。时至今日，我们可以给script标签增加标记，使其异步(延迟)运行，把可控权交给开发者。 <br>
+        async标记 async的好处是让多条js不会互相等待，下载期间浏览器会去干其他事(继续解析HTML等)，异步下载，异步执行。<br>
+        defer标记告诉浏览器在等待js下载期间可以去干其他事，多条js可以并行下载，不过当js下载完成之后不会立即执行，而是会等待解析完整个HTML之后在开始执行，而且多条defer标记的js会按照顺序执行 <br>
+
+        9、视窗外的内容懒加载  <br>
+        10、减少无意义的回流 <br>
+        11、 图片视频选择合理的尺寸 <br>
+        12、 Tree-shaking指的是消除没被引用的模块代码，减少代码体积大小，以提高页面的性能，最初由rollup提出  很多打包工具都已支持。 如 webpack <br>
+        13、压缩 <br>
+        14、使用动态import()代替静态import做条件渲染的懒加载 vue-router文档中关于路由懒加载 <br>
+        15、利用服务器端优先渲染出某一部分重要的内容，让其他内容懒加载，这样到达浏览器端时一部分HTML已经存在，页面上就可以呈现出一定的内容，这里注意服务器端渲染出来的HTML部分最好不要超过14kb，TCP慢开始的规则让第一个TCP包的大小是14kb，这是与网站交互会接受到的第一个包。 <br>
+    </main>
+    <main>
+        <h3>优化标准的参考值</h3>
+        <ul>
+            <li>页面初载时，所有未压缩的 JavaScript 脚本大小：<b>&lt;=200KB</b>；</li>
+            <li>页面初载时，所有未压缩的 CSS 资源大小：<b>&lt;=100KB</b>；</li>
+            <li>HTTP 协议下，请求资源数：<b>&lt;=6 个</b>；</li>
+            <li>HTTP/2 协议下，请求资源数：<b>&lt;=20 个</b> ；</li>
+            <li><b>90%</b> 的代码利用率（也就是说，仅允许 10% 的未使用代码）；</li>
+        </ul>
+    </main>
+</html>
