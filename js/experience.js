@@ -1,3 +1,20 @@
+// 判断页面是 移动端还是PC端打开的
+req.headers["user-agent"].toLowerCase().match(/(iphone|ipod|ipad|android)/); // node层判断端
+navigator.userAgent.toLowerCase().match(/(iphone|ipod|ipad|android)/); // 前端判断端
+
+****************************************************************************************************
+/*
+ * 时间戳转年月日
+ */
+var date = new Date()
+function dateFormat (d) {
+    const month = d.getMonth() > 8 ? '' : '0'
+    const date = d.getDate() > 8 ? '' : '0'
+    return `${d.getFullYear()}-${month}${d.getMonth() + 1}-${date}${d.getDate()}`
+}
+
+*********************************************************************************************************
+
 /*
  *  获取scroll的滚动高度 兼容写法
  */
@@ -119,3 +136,34 @@
     let quality = 0.8; //清晰度
     // 这里的dataurl就是base64类型
     let dataURL = canvas.toDataURL('image/jpeg', quality);
+
+*********************************************************************************************************
+    /*
+     * 内存泄漏避坑
+     */
+    特别vue这类框架的SPA应用 使用第三方库时 new Choices()的变量一定要指定载体，最后要销毁(一般放在beforeDestroy钩子中)。 eg(https://vuejs.bootcss.com/cookbook/avoiding-memory-leaks.html)
+
+    1、console导致的内存泄漏 因为打印后的对象需要支持在控制台上查看，所以传递给console.log方法的对象是不能被垃圾回收的。我们需要避免在生产环境用console打印对象。
+    2、框架配合第三方库使用时，没有及时执行销毁 这点可以参考vue cookbook里的例子：避免内存泄漏 — Vue.js 中文文档
+    3、被遗忘的定时器 例如在组件初始化的时候设置了setInterval，那么在组件销毁之前记得调用clearInterval方法取消定时器。
+    4、没有正确移除事件监听器（各种EventBus, dom事件监听等） 这应该是最容易犯的一个错误，无论新手老手都有可能栽在这里。
+    特征：performance里，监听器数量会持续上升
+
+    // 移除监听器的正确方法
+    mounted() {
+        this.debounceWidthChange = debounce(this.handleWidthChange, 100)
+        window.addEventListener('resize', this.debounceWidthChange)
+    },
+    beforeDestroyed() {
+        window.removeEventListener('resize', this.debounceWidthChange)
+    }
+
+    // 移除监听器的错误方法
+    mounted() {
+        window.addEventListener('resize', debounce(this.handleWidthChange, 100))
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', debounce(this.handleWidthChange, 100))
+    }
+*********************************************************************************************************
+

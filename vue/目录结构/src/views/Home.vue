@@ -93,6 +93,7 @@ export default {
         this.name = window.localStorage.getItem('name')
         this.role = parseInt(window.localStorage.getItem('role'))
 
+        // 左侧导航选中及验证登录的跳转处理
         if (['index', 'ui', 'guide', 'url', 'preview', 'optimize'].indexOf(this.$route.name) > -1) {
             this.activeMenu = "/skill"
         } else {

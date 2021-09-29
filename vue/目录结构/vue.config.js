@@ -2,6 +2,16 @@ module.exports = {
     // 配置打包后静态资源存放的目录
     assetsDir: 'static',
     // 全局引入stylus变量
+    configureWebpack: {
+        resolve: {
+            alias: {
+                'assets': '@/assets',
+                'common': '@/common',
+                'components': '@/components',
+                'source': '@/source'
+            }
+        }
+    },
     css: {
         loaderOptions: {
             stylus: {
