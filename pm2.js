@@ -38,7 +38,7 @@ const pm2config = {
         "restart_delay": "60s"                      // 异常重启情况下，延时重启时间
         "env": {
            "NODE_ENV": "production",                // 环境参数，当前指定为生产环境 process.env.NODE_ENV
-           "REMOTE_ADDR": "爱上大声地"               // process.env.REMOTE_ADDR
+           "REMOTE_ADDR": "可以设置不同的环境不同的后端地址，应该也可以加别的变量 类似vue"               // process.env.REMOTE_ADDR
         },
         "env_dev": {
             "NODE_ENV": "development",              // 环境参数，当前指定为开发环境 pm2 start app.js --env_dev

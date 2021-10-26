@@ -8,11 +8,20 @@ navigator.userAgent.toLowerCase().match(/(iphone|ipod|ipad|android)/); // 前端
  */
 var date = new Date()
 function dateFormat (d) {
-    const month = d.getMonth() > 8 ? '' : '0'
-    const date = d.getDate() > 8 ? '' : '0'
-    return `${d.getFullYear()}-${month}${d.getMonth() + 1}-${date}${d.getDate()}`
+    const month = d.getMonth()
+    const date = d.getDate()
+    return `${d.getFullYear()}-${month > 8 ? '' : '0'}${month + 1}-${date > 9 ? '' : '0'}${date}`
 }
 
+function handleTime(d) {
+    var cTime = new Date(parseInt(d))
+    const month = cTime.getMonth()
+    const date = cTime.getDate()
+    const hour = cTime.getHours()
+    const minute = cTime.getMinutes()
+
+    return `${cTime.getFullYear()}-${month > 8 ? '' : '0'}${month + 1}-${date > 9 ? '' : '0'}${date} ${hour > 9 ? '' : '0'}${hour}:${minute > 9 ? '' : '0'}${minute}`
+}
 *********************************************************************************************************
 
 /*
