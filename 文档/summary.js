@@ -15,7 +15,7 @@
 
 ******************************************************************************
   足够牛之后
-  跟任何人联调 有错误 能定位到其他人的错误 原因  不仅是自己知识范围内的
+  跟任何人联调 有错误 能定位到其他人的错误原因  不仅是自己知识范围内的
 
 ******************************************************************************
   完全冻结一个对象
@@ -26,8 +26,11 @@
   其他知识：
 
   1、利用Object.freeze()提升性能
-      当你把一个普通的 JavaScript 对象传给 Vue 实例的  data  选项，Vue 将遍历此对象所有的属性，并使用  Object.defineProperty  把这些属性全部转为 getter/setter，这些 getter/setter 对用户来说是不可见的，但是在内部它们让 Vue 追踪依赖，在属性被访问和修改时通知变化。
-      但 Vue 在遇到像 Object.freeze() 这样被设置为不可配置之后的对象属性时，不会为对象加上 setter getter 等数据劫持的方法。参考Vue源码(vue会检测对象键的prop.configurable false时 不设置双向绑定)
+      当你把一个普通的 JavaScript 对象传给 Vue 实例的  data  选项，Vue 将遍历此对象所有的属性，并使用
+      Object.defineProperty  把这些属性全部转为 getter/setter，这些 getter/setter 对用户来说是不可见的，
+      但是在内部它们让 Vue 追踪依赖，在属性被访问和修改时通知变化。
+      但 Vue 在遇到像 Object.freeze() 这样被设置为不可配置之后的对象属性时，不会为对象加上 setter getter
+      等数据劫持的方法。参考Vue源码(vue会检测对象键的prop.configurable false时 不设置双向绑定)
 
   2、锁定对象的方法
 
@@ -106,6 +109,15 @@
       configurable: false,
       enumerable: false
     });
+******************************************************************************
+  AST(Abstract Syntax Tree)抽象语法树
+    一、定义
+    AST是源代码的抽象语法结构的树状表示，这种数据结构其实就是一个大的json对象。简单理解，就是把我们写的代码按照一定的规则
+    转换成一种树形结构。
+    二、AST的用途
+    AST的作用不仅仅是用来在JavaScript引擎的编译上，我们在实际的开发过程中也是经常使用的，比如我们常用的babel插件将 ES6
+    转化成ES5、使用 UglifyJS来压缩代码 、css预处理器、开发WebPack插件、Vue-cli前端自动化工具等等，这些底层原理都是基于
+    AST来实现的，AST能力十分强大， 能够帮助开发者理解JavaScript这门语言的精髓。
 ******************************************************************************
   vue源码解读
   一、模板到真实节点的过程
@@ -275,7 +287,7 @@
           finishComponentSetup(instance, parentSuspense)
         }
 
-  四、Vue的更新机制(虚拟dom、diff算法)
+  四、Vue 2.0 的更新机制(虚拟dom、diff算法)
     虚拟dom是由一个个Vnode节点组成的，核心代码位于 patch.js, 大体流程为：
     1、新的Vnode节点不存在并且老的Vnode存在，只调用销毁Vnode节点的Hook; 如果老的Vnode节点不存在，
       则直接调用新建函数生成节点。如果新老节点都存在并且通过sameVnode函数判断为true，则再进行diff操作，
@@ -299,6 +311,77 @@
         )
       }
       sameVnode主要逻辑:
-      首先判断key是否一致，其次同步组件需要判断是否同为注释节点或都不是注释节点、数据信息是否存在、Input类型是否一致，而异步组件需要判断工厂函数是否一致。
+      首先判断key是否一致，其次同步组件需要判断是否同为注释节点或都不是注释节点、数据信息是否存在、Input类型是否一致，
+      而异步组件需要判断工厂函数是否一致。
     2、diff的核心在updateChildren函数
 ******************************************************************************
+  vue 3.0 diff算法解读
+    一、什么地方用到了diff
+      1、存在children的vnode
+        ① element vnode 元素类型的
+          用 patchElement() 处理
+        ② fragment vnode 碎片类型的
+          `<Fragment>
+            <span> 苹果 </span>
+            <span> 香蕉 </span>
+            <span> 鸭梨 </span>
+          </Fragment>`
+          用 processFragment() 处理
+
+      2、patchChildren 处理 1 中的vnode, patchChildren时，发现children还有自己的children，会递归向下patch
+
+        根据是否存在key进行真正的diff patchKeyedChildren() 或者直接patch patchUnkeyedChildren()
+
+    二、diff算法
+      在vue2 diff算法的基础上 使用 最长增长子序列算法 做了优化，大大提高了效率。以下是实现方法
+
+      1、动态规划
+        var arr = [2,3,5,10,7,20,100,0];
+        let dp =[];
+        for(let i=0;i<arr.length;i++){
+            dp[i]=1;
+        }
+        let res = 0;
+        for(let i=1;i<arr.length;i++){
+            for(let j=0;j<i;j++){
+                if(arr[j]<arr[i]){
+                    dp[i] = Math.max(dp[i],dp[j]+1)  // dp[i]代表第i个位置上升子序列中元素的长度
+                }
+            }
+            res = Math.max(res,dp[i])
+        }
+        console.log(res)
+      2、最小二分法
+        let arr = [1, 5, 6, 7, 8, 2, 3, 4, 9]
+        let subArr = [0]
+        let prevIndex=[0];
+        for (let i = 1; i < arr.length; i++) {
+          if (arr[i] > arr[subArr[subArr.length - 1]]) {
+            prevIndex.push(subArr[subArr.length - 1])
+            subArr.push(i)
+          } else {// arr[i] 较小
+            let u = 0;
+            let c= 0;
+            let v = subArr.length - 1
+            // 二分搜索，查找比 arrI 小的节点，更新 result 的值
+            while (u < v) {
+              c = ((u + v) / 2) | 0
+              if (arr[i] > arr[subArr[c]]) {
+                u = c + 1
+              } else {
+                v = c
+              }
+            }
+            if (arr[i] < arr[subArr[u]]) {
+              prevIndex.push(subArr[u-1])
+              subArr[u] = i
+            }
+          }
+          // 利用前驱节点重新计算subArr
+          let length = subArr.length; //总长度
+          let  prev = subArr[length - 1] // 最后一项
+          while (length-- > 0) {// 根据前驱节点一个个向前查找
+            subArr[length] = prev
+            prev = prevIndex[subArr[length]]
+          }
+        }

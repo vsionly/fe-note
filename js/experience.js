@@ -19,8 +19,9 @@ function handleTime(d) {
     const date = cTime.getDate()
     const hour = cTime.getHours()
     const minute = cTime.getMinutes()
+    const second = cTime.getSeconds()
 
-    return `${cTime.getFullYear()}-${month > 8 ? '' : '0'}${month + 1}-${date > 9 ? '' : '0'}${date} ${hour > 9 ? '' : '0'}${hour}:${minute > 9 ? '' : '0'}${minute}`
+    return `${cTime.getFullYear()}-${month > 8 ? '' : '0'}${month + 1}-${date > 9 ? '' : '0'}${date} ${hour > 9 ? '' : '0'}${hour}:${minute > 9 ? '' : '0'}${minute}:${second > 9 ? '' : '0'}${second}`
 }
 *********************************************************************************************************
 

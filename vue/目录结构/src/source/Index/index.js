@@ -1,6 +1,6 @@
 import provinces from '@/common/js/district.js'
 export default {
-    name: 'Index',
+    name: 'IndexPage',
     data() {
         return {
             data: ''
