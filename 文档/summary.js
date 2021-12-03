@@ -314,6 +314,59 @@
       首先判断key是否一致，其次同步组件需要判断是否同为注释节点或都不是注释节点、数据信息是否存在、Input类型是否一致，
       而异步组件需要判断工厂函数是否一致。
     2、diff的核心在updateChildren函数
+
+  五、双向绑定的更新机制
+    1、Object.defineProperty - get ，用于 依赖收集
+    2、Object.defineProperty - set，用于 依赖更新
+    3、每个 data 声明的属性，都拥有一个的专属依赖收集器 subs (包括页面的依赖、compute、watch等)
+    4、依赖收集器 subs 保存着依赖的 watcher
+    5、watcher 用于 进行视图更新
+
+  六、v-model
+    <input v-model="searchText"> 相当于
+    <input v-bind:value="searchText" v-on:input="searchText = $event.target.value">
+    *****************************************************************************************************
+
+      自定义组件上 <custom-input v-bind:value="searchText" v-on:input="searchText = $event"></custom-input> /
+
+      具体实现
+      Vue.component('custom-input', {
+        props: ['value'],
+        template: `
+          <input
+            v-bind:value="value"
+            v-on:input="$emit('input', $event.target.value)"
+          >
+        `
+      })
+      使用 <custom-input v-model="searchText"></custom-input> /
+
+    ***************************************************************************************************
+
+    **** 非input元素封装的自定义组件 ****
+
+      一个组件上的 v-model 默认会利用名为 value 的 prop 和名为 input 的事件，但是像单选框、复选框等类型的输入控件
+      可能会将 value attribute 用于不同的目的。model 选项可以用来避免这样的冲突：
+
+      Vue.component('base-checkbox', {
+        model: {
+          prop: 'checked',
+          event: 'change'
+        },
+        props: {
+          checked: Boolean
+        },
+        template: `
+          <input
+            type="checkbox"
+            v-bind:checked="checked"
+            v-on:change="$emit('change', $event.target.checked)"
+          >
+        `
+      })
+
+      使用 <base-checkbox v-model="lovingVue"></base-checkbox> /
+
 ******************************************************************************
   vue 3.0 diff算法解读
     一、什么地方用到了diff

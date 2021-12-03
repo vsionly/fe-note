@@ -68,6 +68,43 @@
     }
 
 ****************************************************************************************
+****************************************************************************************
+    instanceof的大致效果是：当左边是基本类型值时，一律返回false。 当左边是引用类型值时，如果
+    右边的原型对象，在左边的原型链上存在，返回真，否则假。
+    function myInstanceof(leftVal, rightFunc) {
+      if (typeof rightFunc !== 'function') throw new Error('第二个参数请传入构造函数名');
+      return rightFunc.prototype.isPrototypeOf(leftVal);
+      // F.prototype.isPrototypeOf(obj)判断obj的原型指针是否指向传入构造函数的原型对象，这个过程
+      // 会往上层层判断。比如，以下验证myInstanceof(xm, Object);xm的原型指针指向Person.prototype,Person.prototype
+      // 的原型指针指向Object.prototype。所以返回true
+    }
+
+    // 利用浏览器在对象上布置的__proto__属性、加递归调用实现判断
+    function myInstanceof(leftVal, rightFunc) {
+      if (typeof rightFunc !== 'function') throw new Error('第二个参数请传入构造函数名');
+      if (typeof leftVal !== 'object' || leftVal === null) return false;
+      if (leftVal.__proto__ === rightFunc.prototype) {// __proto__原型指针
+        return true;
+      } else {
+        return myInstanceof(leftVal.__proto__, rightFunc);
+      }
+    }
+
+    // 利用Object.getPrototypeOf()方法获取对象的原型，利用while循环层层递进。
+    // 都没有，最后Object.getPrototypeOf()值为null。
+    function myInstanceof(leftVal, rightFunc) {
+      if (typeof rightFunc !== 'function') throw new Error('第二个参数请传入构造函数名');
+      if (typeof leftVal !== 'object' || leftVal === null) return false;
+      let _proto = Object.getPrototypeOf(leftVal);
+      while (_proto) {
+        if (_proto === rightFunc.prototype) {
+          return true;
+        }
+        _proto = Object.getPrototypeOf(_proto);
+      }
+      return false;
+    }
+****************************************************************************************
     /*
      * 实现rquire 依赖的node主要模块 path、fs、vm
 

@@ -176,6 +176,99 @@ function handleTime(d) {
         window.removeEventListener('resize', debounce(this.handleWidthChange, 100))
     }
 *********************************************************************************************************
+    // 上传、导入
+    let fd = new FormData()
+    fd.append('rule_name', files.name)
+    fd.append('operater', 'liweisheng')
+    fd.append('file', files)
+
+    axios.post('http://211.154.163.112:6152/sniff_package_upload', fd).then(res => {
+    }).catch(e => {
+        console.log(e)
+    })
+
+    // 下载、导出
+    <iframe style="width: 0;height: 0;" name="download"></iframe> / 设置a的打开区域为ifram 内 防止部分浏览器跳转页面
+    this.$api.get('/org/export', param).then(res => {
+        console.log(res, 333)
+        // if (res.status === 0) {
+            var a = document.createElement('a')
+            // a.download = '机构列表.xlsx'
+            // a.href = 'http://211.154.163.104:7557/org/export?auth_code='+window.localStorage.getItem('auth_code') // 绑定a标签
+            a.href = res // 绑定a标签
+            a.target = 'download'
+            a.click() // 模拟点击实现下载
+            // setTimeout(function () { // 延时释放
+            //     URL.revokeObjectURL(res) // 用URL.revokeObjectURL()来释放这个object URL
+            // }, 100)
+        // }
+    })
 
 
+*********************************************************************************************************
+    /* vue tpl 下载excel等
+    <template>
+        <iframe name="chartdata-download" id="chartdata-download" style="display: none;"></iframe>
+    </template>
+    */
+
+    export default {
+        name: 'download',
+        methods: {
+            // 1、使用get请求方式直接进行下载（最简单的方法）
+            getOpen() {
+                // window.open(`${url}?${qs.stringify(param)}`, '_blank');
+                this.$refs.iframe.contentWindow.open(`http://211.154.163.112:6152/sniff_package_download?rule_name=${this.activeName}`, '_self'); // 当前页面实现下载
+            },
+            // 2、模拟form表单post方式获取下载文件数据
+            formPost(i) {
+                const form = document.createElement('form')
+                form.action = 'url' // 接口的地址
+                form.method = 'post'
+                form.target = 'chartdata-download' // 在隐藏的iframe中打开action设置的页面
+
+                let input = document.createElement('input') // 创建表单项
+                input.type = 'hidden'
+                input.name = 'data' // 表单项的键
+                input.value = JSON.stringify({result: this.result, department_array: this.param.department_array}) // 表单项的值
+                form.appendChild(input)
+
+                input = document.createElement('input')
+                input.name = 'export_type'
+                input.value = 1
+                form.appendChild(input)
+
+                input = document.createElement('input')
+                input.name = 'appid'
+                input.value = 235123
+                form.appendChild(input)
+
+                document.body.appendChild(form)
+                form.submit()
+                document.body.removeChild(form)
+            },
+            // 3、使用FileReader转化数据流为下载文件
+            fileReader{
+                axios.post(url, param, {
+                  responseType: 'blob'
+                }).then((res) => {
+                  console.log('res', res);
+                  const blob = res.data;
+                  const reader = new FileReader();
+                  reader.readAsDataURL(blob);
+                  reader.onload = (e) => {
+                    const a = document.createElement('a');
+                    // a.download = `文件名称.zip`;
+                    // 后端设置的文件名称在res.headers的 "content-disposition": "form-data; name=\"attachment\"; filename=\"20181211191944.zip\"",
+                    a.href = e.target.result;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                  };
+                }).catch((err) => {
+                  console.log(err.message);
+                });
+            }
+        }
+    }
 
