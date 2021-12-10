@@ -7,7 +7,7 @@ import '@/common/css/index.styl' // 全局样式
 // 全局注册icon组件 配置vue.config.js的chainWebpack
 import SvgIcon from '@/components/SvgIcon.vue'
 Vue.component('SvgIcon', SvgIcon)
-import '@/assets/icons/index.js'
+import '@/common/js/svg.js'
 
 // 按需引入element
 import { Menu, MenuItem, Submenu, Select, Option, Pagination, Table, TableColumn, Dialog } from 'element-ui'
