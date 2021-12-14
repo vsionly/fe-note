@@ -34,4 +34,12 @@
     高阶
     1、scoped 的原理 ; 为啥scoped 里的样式 有时候怎么e ui 里不生效
     2、material里 input的标题怎么实现的
+    3、Object.assign()方法实行的是浅拷贝，而不是深拷贝 而且不能拷贝 不可枚举属性 (属性名为 Symbol 除外)
+    可枚举属性 影响 for in 、 Object.keys()、 JSON.stringify 其他函数可以自测
+
+    const obj1 = {a: {b: 1}};
+    const obj2 = Object.assign({}, obj1);
+
+    obj1.a.b = 2;
+    obj2.a.b // 2
 ******************************************************************************
