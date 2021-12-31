@@ -1,3 +1,4 @@
+//  测试学习js 模板文件
 function Promise(exector) {
     var _this = this
     this.status = 'pending'
