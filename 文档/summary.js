@@ -18,6 +18,121 @@
   跟任何人联调 有错误 能定位到其他人的错误原因  不仅是自己知识范围内的
 
 ******************************************************************************
+  javascript
+    1、Scope 作用域
+      在js中可以理解为程序执行的当前环境，又称为上下文。 The current context of execution.
+      作用域有层级的概念，子作用域可以访问父作用域，反之则不行。 Scopes can also be layered in a hierarchy
+
+    2、closure 闭包
+      函数及函数对其周围状态 (the lexical environment 词法环境) 的引用 (变量、子函数等函数内的代码块) 就称为闭包.
+      函数创建时就创建了闭包。
+      闭包使您可以从内部函数访问外部函数的作用域。
+      词法（lexical）一词指的是，词法作用域根据源代码中声明变量的位置来确定该变量在何处可用。
+
+      * 闭包的主要表现 就是内部函数维持了一个对它的词法环境（外部函数的某个变量）的引用。
+
+      *  这个例子中的name 每次调用 myFunc 都会累加一次
+      *  function makeFunc() {
+      *      var name = 10;
+      *      function displayName() {
+      *          console.log(name++);
+      *      }
+      *      displayName()
+      *      return displayName;
+      *  }
+      *
+      *  var myFunc = makeFunc();
+      *  myFunc(); // 10
+      *  myFunc(); // 11
+      *  ...
+
+      ******************************************************************************
+        function makeAdder(x) {
+          return function(y) {
+            return x + y;
+          };
+        }
+
+        var add5 = makeAdder(5);
+        var add10 = makeAdder(10);
+
+        console.log(add5(2));  // 7
+        console.log(add10(2)); // 12
+
+        从本质上讲，makeAdder 是一个函数工厂 — 他创建了将指定的值和它的参数相加求和的函数。
+        add5 和 add10 都是闭包。它们共享相同的函数定义，但是保存了不同的词法环境。在 add5 的
+        环境中，x 为 5。而在add10 中，x 则为 10。
+
+      ******************************************************************************
+        实现面向对象
+        function makeSizer(size) {
+          return function() {
+            document.body.style.fontSize = size + 'px';
+          };
+        }
+
+        var size12 = makeSizer(12);
+        var size14 = makeSizer(14);
+
+      ******************************************************************************
+        模拟私有方法，私有方法不仅仅有利于限制对代码的访问：还提供了管理全局命名空间的强大能
+        力，避免非核心的方法弄乱了代码的公共接口部分。
+        这样使用闭包可以提交许多与面向对象编程相关的好处 (特别是数据隐藏和封装.)
+        var Counter = (function() {
+          var privateCounter = 0;
+          function changeBy(val) {
+            privateCounter += val;
+          }
+          return {
+            increment: function() {
+              changeBy(1);
+            },
+            decrement: function() {
+              changeBy(-1);
+            },
+            value: function() {
+              return privateCounter;
+            }
+          }
+        })();
+        // privateCounter 相当于私有变量
+        // changeBy 相当于私有方法
+        console.log(Counter.value()); /* 0 */
+        Counter.increment();
+        Counter.increment();
+        console.log(Counter.value()); /* 2 */
+        Counter.decrement();
+        console.log(Counter.value()); /* 1 */
+
+      ******************************************************************************
+    3、事件循环
+      JS的代码执行是基于一种事件循环的机制，所以称作事件循环。
+
+      程序运行时，同步任务进入主线程，即主执行栈，异步任务进入任务队列。主线程内的任务(宏任务) 执行完毕 (每个宏任务结束后,
+      都要清空所有的微任务)，会去任务队列读取其中的任务，推入主线程执行，上述过程不断重复就是我们说的 EventLoop (事件循
+      环) 每一次循环操作称为一次tick.
+
+      macro task 宏任务  script( 整体代码)、setTimeout、setInterval、I/O、UI 交互事件、setImmediate(Node.js 环境)
+      micro task 微任务  Promise、MutaionObserver、process.nextTick(Node.js 环境)
+
+      ** node环境中(依赖libuv引擎) process.nextTick会优先其他微任务先执行 **
+
+      ******************************************************************************
+      1、最好的js循环动画写法
+        function render (argument) {
+          动画处理代码
+        }
+        (function animloop() {
+            render();
+            window.requestAnimationFrame(animloop);
+        })();
+
+      2、
+
+******************************************************************************
+
+******************************************************************************
+******************************************************************************
   完全冻结一个对象
   1、const obj 声明这个对象
   2、Object.freeze(obj) 遍历 Object.getOwnPropertyNames(obj)深冻结
@@ -26,8 +141,8 @@
   其他知识：
 
   1、利用Object.freeze()提升性能
-      当你把一个普通的 JavaScript 对象传给 Vue 实例的  data  选项，Vue 将遍历此对象所有的属性，并使用
-      Object.defineProperty  把这些属性全部转为 getter/setter，这些 getter/setter 对用户来说是不可见的，
+      当你把一个普通的 JavaScript 对象传给 Vue 实例的  data  选项，Vue 将遍历此对象所有的属性，并使用
+      Object.defineProperty 把这些属性全部转为 getter/setter，这些 getter/setter 对用户来说是不可见的，
       但是在内部它们让 Vue 追踪依赖，在属性被访问和修改时通知变化。
       但 Vue 在遇到像 Object.freeze() 这样被设置为不可配置之后的对象属性时，不会为对象加上 setter getter
       等数据劫持的方法。参考Vue源码(vue会检测对象键的prop.configurable false时 不设置双向绑定)
