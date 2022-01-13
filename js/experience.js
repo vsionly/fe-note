@@ -7,10 +7,52 @@ function createNum () {
     return init.toString() + discut.toString()
 }
 ****************************************************************************************************
+    // rem布局 页面中的字体根据设计图/100
+    // 基准大小
+    const baseSize = 100
+    // 设置 rem 函数
+    function setRem () {
+        // 当前页面宽度相对于 1920宽的缩放比例，可根据自己需要修改。
+        let w = document.documentElement.clientWidth
+        if (w < 1400) w = 1400
+        if (w > 2200) w = 2200
+        let scale = w / 1920
+
+        // 设置页面根节点字体大小 可使用（“Math.min(scale, 2)” 指最高放大比例为2，可根据实际业务需求调整）
+        document.documentElement.style.fontSize = baseSize *  + 'px'
+    }
+
+    // 初始化
+    setRem()
+    // 改变窗口大小时重新设置 rem
+    window.onresize = function () {
+        setRem()
+    }
 ****************************************************************************************************
-// 判断页面是 移动端还是PC端打开的
-req.headers["user-agent"].toLowerCase().match(/(iphone|ipod|ipad|android)/); // node层判断端
-navigator.userAgent.toLowerCase().match(/(iphone|ipod|ipad|android)/); // 前端判断端
+    // 判断页面是 移动端还是PC端打开的
+    req.headers["user-agent"].toLowerCase().match(/(iphone|ipod|ipad|android)/); // node层判断端
+    navigator.userAgent.toLowerCase().match(/(iphone|ipod|ipad|android)/); // 前端判断端
+
+    // 判断浏览器
+        (function () {
+            let u = navigator.userAgent;
+            let app = navigator.appVersion;
+            return {   // 移动终端浏览器版本信息
+                trident: u.indexOf('Trident') > -1, // IE内核
+                presto: u.indexOf('Presto') > -1, // opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, // 苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') === -1, // 火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/), // 是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), // ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, // android终端或uc浏览器
+                iPhone: u.indexOf('iPhone') > -1, // 是否为iPhone或者QQHD浏览器
+                iPad: u.indexOf('iPad') > -1, // 是否iPad
+                webApp: u.indexOf('Safari') === -1, // 是否web应该程序，没有头部与底部
+                weixin: u.indexOf('MicroMessenger') > -1, // 是否为微信浏览器
+                qq: u.match(/\sQQ/i) !== null, // 是否QQ
+                Safari: u.indexOf('Safari') > -1
+            };
+        }())
 
 ****************************************************************************************************
 /*
