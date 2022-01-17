@@ -17,3 +17,8 @@ npm restart === npm run stop && npm run restart && npm run start
 npm i -production  安装生产环境依赖
 
 `
+
+// 查询项目的浏览器兼容性
+`
+npx browserslist
+`
