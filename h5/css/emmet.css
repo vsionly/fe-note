@@ -103,7 +103,11 @@
     transform: 12;
 }
 .jcsb{
- justify-content:space-between;
+    justify-content:space-between;
+}
+
+.fxdcr{
+    flex-direction: column-reverse;
 }
 
 /* html */
