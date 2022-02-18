@@ -55,26 +55,26 @@ function createNum () {
         }())
 
 ****************************************************************************************************
-/*
- * 时间戳转年月日
- */
-var date = new Date()
-function dateFormat (d) {
-    const month = d.getMonth()
-    const date = d.getDate()
-    return `${d.getFullYear()}-${month > 8 ? '' : '0'}${month + 1}-${date > 9 ? '' : '0'}${date}`
-}
+    /*
+     * 时间戳转年月日
+     */
+    var date = new Date()
+    function dateFormat (d) {
+        const month = d.getMonth()
+        const date = d.getDate()
+        return `${d.getFullYear()}-${month > 8 ? '' : '0'}${month + 1}-${date > 9 ? '' : '0'}${date}`
+    }
 
-function handleTime(d) {
-    var cTime = new Date(parseInt(d))
-    const month = cTime.getMonth()
-    const date = cTime.getDate()
-    const hour = cTime.getHours()
-    const minute = cTime.getMinutes()
-    const second = cTime.getSeconds()
+    function handleTime(d) {
+        var cTime = new Date(parseInt(d))
+        const month = cTime.getMonth()
+        const date = cTime.getDate()
+        const hour = cTime.getHours()
+        const minute = cTime.getMinutes()
+        const second = cTime.getSeconds()
 
-    return `${cTime.getFullYear()}-${month > 8 ? '' : '0'}${month + 1}-${date > 9 ? '' : '0'}${date} ${hour > 9 ? '' : '0'}${hour}:${minute > 9 ? '' : '0'}${minute}:${second > 9 ? '' : '0'}${second}`
-}
+        return `${cTime.getFullYear()}-${month > 8 ? '' : '0'}${month + 1}-${date > 9 ? '' : '0'}${date} ${hour > 9 ? '' : '0'}${hour}:${minute > 9 ? '' : '0'}${minute}:${second > 9 ? '' : '0'}${second}`
+    }
 *********************************************************************************************************
 
 /*
@@ -84,9 +84,9 @@ function handleTime(d) {
 
 *********************************************************************************************************
 
-/*
- *  node服务 使用pm2传参时的参数使用方法 pm2 .... -- port=8000
- */
+    /*
+     *  node服务 使用pm2传参时的参数使用方法 pm2 .... -- port=8000
+     */
     let cmdArgv = {}
     const Argvs = process.argv.slice(2)
 
@@ -101,9 +101,9 @@ function handleTime(d) {
 
 *********************************************************************************************************
 
-/*
- *  密码包含字符 数字 字母中的至少两种
- */
+    /*
+     *  密码包含字符 数字 字母中的至少两种
+     */
     function _pwdRule(d) {
         let hasd = /\d/.test(this.vPassword) // 包含数字
         let hasl = /[A-Za-z]/.test(this.vPassword) // 包含字母
@@ -113,9 +113,9 @@ function handleTime(d) {
 
 *********************************************************************************************************
 
-/*
- *  邮箱验证
- */
+    /*
+     *  邮箱验证
+     */
     function _checkEmail(val) {
         const myReg = /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/;
         if (myReg.test(val)) {
@@ -126,9 +126,9 @@ function handleTime(d) {
     }
 *********************************************************************************************************
 
-/*
- *  动态加载js 并监听js的加载
- */
+    /*
+     *  动态加载js 并监听js的加载
+     */
     function loadJs(url,callback){
         var script = document.createElement('script');
         script.type = "text/javascript";
@@ -256,7 +256,6 @@ function handleTime(d) {
         // }
     })
 
-
 *********************************************************************************************************
     /* vue tpl 下载excel等
     <template>
@@ -324,3 +323,60 @@ function handleTime(d) {
         }
     }
 
+*********************************************************************************************************
+    /*
+     *  unicode、ascii转码
+     *
+     */
+
+    // 字符转unicode
+    function unicode(str){
+        var value='';
+        for (var i = 0; i < str.length; i++) {
+            value += '\\u' + left_zero_4(parseInt(str.charCodeAt(i)).toString(16));
+        }
+        return value;
+    }
+
+    function left_zero_4(str) {
+        if (str != null && str != '' && str != 'undefined') {
+            if (str.length == 2) {
+                return '00' + str;
+            }
+        }
+        return str;
+    }
+
+    // unicode 转字符
+    function reconvert(str){
+        str = str.replace(/(\\u)(\w{1,4})/gi,function($0){
+        return (String.fromCharCode(parseInt((escape($0).replace(/(%5Cu)(\w{1,4})/g,"$2")),16)));
+        });
+        str = str.replace(/(&#x)(\w{1,4});/gi,function($0){
+        return String.fromCharCode(parseInt(escape($0).replace(/(%26%23x)(\w{1,4})(%3B)/g,"$2"),16));
+        });
+        str = str.replace(/(&#)(\d{1,6});/gi,function($0){
+        return String.fromCharCode(parseInt(escape($0).replace(/(%26%23)(\d{1,6})(%3B)/g,"$2")));
+        });
+
+        return str;
+    }
+
+    // Unicode转换ASCII
+    function unicode1(str){
+        var value='';
+        for (var i = 0; i < str.length; i++)
+            value += '&#' + str.charCodeAt(i) + ';';
+        return value;
+    }
+
+    // 中文转换&#XXXX
+    function ascii(str){
+        var value='';
+        for (var i = 0; i < str.length; i++) {
+            value += '\&#x' + left_zero_4(parseInt(str.charCodeAt(i)).toString(16))+';';
+        }
+        return value;
+    }
+
+*********************************************************************************************************
