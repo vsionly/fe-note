@@ -1,4 +1,4 @@
-## licence
+s## licence
 ### BDS
 Xwindows、freeBDS、apache(APL)、perl、python、ruby、zope等
 ### GPL

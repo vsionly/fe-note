@@ -2,6 +2,7 @@
 <script type="text/javascript">
     function imgerrorfun(){
         var img=event.srcElement;
+        console.log(event)
         img.src="images/logoError.png";
         img.onerror=null; // 当兼容图片也加载失败时 控制不要一直跳动
     }

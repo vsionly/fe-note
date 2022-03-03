@@ -41,7 +41,7 @@
    Vue Syntax Highlight // vue开发支持vue的语法高亮
    Stylus // vue文件中 stylus 的语法高亮
    Emmet // 快速编写html、css、stylus、sass、scss
-   JavaScript-Completions // js预定义、自定义函数 快捷生成插件
+   <!-- JavaScript-Completions // js预定义、自定义函数 快捷生成插件 -->
    SublimeCodeIntel // 代码提示插件
    ··
    软件出现功能问题的解决方案 //  删除 C:\Users\liwsh\AppData\Roaming\Sublime Text 3的所有相关文件

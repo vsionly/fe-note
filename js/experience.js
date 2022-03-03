@@ -54,6 +54,31 @@ function createNum () {
             };
         }())
 
+    /**
+       * 判断是否为微信/微信小程序/支付宝 判断微信需要引入wx-sdk
+       * @export
+       * @returns
+       */
+        export function isWeChatMiniApp() {
+            const ua = window.navigator.userAgent.toLowerCase();
+            // if(userAgent.match(/Alipay/i)=="alipay"){
+            return new Promise((resolve) => {
+                if (ua.indexOf('micromessenger') == -1) {
+                    console.log("不在微信或者小程序中")
+                    resolve(false);
+                } else {
+                    wx.miniProgram.getEnv((res) => {
+                        if (res.miniprogram) {
+                            console.log("在小程序中")
+                            resolve(true);
+                        } else {//在微信中
+                            console.log("在微信中")
+                            resolve(false);
+                        }
+                    });
+                }
+            });
+        }
 ****************************************************************************************************
     /*
      * 时间戳转年月日
@@ -259,7 +284,7 @@ function createNum () {
 *********************************************************************************************************
     /* vue tpl 下载excel等
     <template>
-        <iframe name="chartdata-download" id="chartdata-download" style="display: none;"></iframe>
+        <iframe name="download" id="download" style="display: none;"></iframe>
     </template>
     */
 
@@ -272,11 +297,15 @@ function createNum () {
                 this.$refs.iframe.contentWindow.open(`http://211.154.163.112:6152/sniff_package_download?rule_name=${this.activeName}`, '_self'); // 当前页面实现下载
             },
             // 2、模拟form表单post方式获取下载文件数据
+            /*
+             * 后端接口改为post方式 可以直接下载
+             *
+             */
             formPost(i) {
                 const form = document.createElement('form')
                 form.action = 'url' // 接口的地址
                 form.method = 'post'
-                form.target = 'chartdata-download' // 在隐藏的iframe中打开action设置的页面
+                form.target = 'download' // 在隐藏的iframe中打开action设置的页面
 
                 let input = document.createElement('input') // 创建表单项
                 input.type = 'hidden'
@@ -298,11 +327,17 @@ function createNum () {
                 form.submit()
                 document.body.removeChild(form)
             },
-            // 3、使用FileReader转化数据流为下载文件
+
+            /*
+             * 3、使用FileReader转化数据流为下载文件
+             * 后端接口可以是post 也可以是get
+             *
+             */
             fileReader{
                 axios.post(url, param, {
                   responseType: 'blob'
                 }).then((res) => {
+
                   console.log('res', res);
                   const blob = res.data;
                   const reader = new FileReader();
@@ -322,6 +357,47 @@ function createNum () {
             }
         }
     }
+
+    /*
+     * node后端代码 基于koa2
+     *
+     */
+    const nodeExcel = require("node-xlsx");
+    router.get('/api/exportExcel', async (ctx, next) => {
+        autoC(ctx.request, '=', ctx.res)
+        res = ctx.res
+        const data = [
+          ['序号', '申请人', '申请预约时间', '申请科室', '创建时间', '审核人', '审核时间', '处理人', '处理时间', '状态', '处理结果', '详情']
+        ];
+        result.map((v, k) => {
+            data.push([
+                ++k,
+                v.applicant,
+                v.visitdate,
+                v.department,
+                handleTime(v.create_time),
+                v.reviewer && v.reviewer.name,
+                v.review_time?handleTime(v.review_time):'',
+                v.handler && v.handler.name,
+                v.handle_time?handleTime(v.handle_time):'',
+                ['未查看', '已查看', '处理中', '已拒绝', '已完成'][v.status],
+                v.message,
+                `${ctx.header['x-forwarded-proto']}://${ctx.header['x-forwarded-host']}?register_id${v.id}&app_id=5e4e332e42e6dfac97c309bf`
+            ])
+        })
+
+        const sheetOptions = {'!cols': [{wch: 5}, {wch: 8}, {wch: 18}, {wch: 10},{wch: 18}, {wch: 10}, {wch: 18}, {wch: 10},{wch: 18}, {wch: 7}, {wch: 20}, {wch: 70}]}
+        var buffer = xlsx.build([{name: 'mySheetName', data: data}], {sheetOptions});
+
+        res.setHeader('Access-Control-Allow-Origin', '*');//设置响应头
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+        res.setHeader("Content-Disposition", "attachment; filename=user.xlsx");
+
+        ctx.response.body = buffer
+    });
+
+    // 待验证
+    const blob = new Blob([res], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'});
 
 *********************************************************************************************************
     /*
@@ -379,4 +455,18 @@ function createNum () {
         return value;
     }
 
+*********************************************************************************************************
+    /*
+     * 前端安全
+     *
+     */
+
+    1、CSRF(Cross Site Request Forgery) 跨站点请求伪造 利用用户的登录信息 伪造请求 获取机密信息、盗取资产等
+    2、
+
+*********************************************************************************************************
+    /*
+     * 模式
+     *
+     */
 *********************************************************************************************************
