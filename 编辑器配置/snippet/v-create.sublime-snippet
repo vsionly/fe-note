@@ -1,0 +1,9 @@
+<snippet>
+    <content><![CDATA[
+created() {
+    ${1:this}
+},
+]]></content>
+    <tabTrigger>vc</tabTrigger>
+    <scope>text.html.vue source.js.embedded.html source.js meta.export.js meta.object-literal.js</scope>
+</snippet>

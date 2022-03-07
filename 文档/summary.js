@@ -124,12 +124,21 @@
       都要清空所有的微任务)，会去任务队列读取其中的任务，推入主线程执行，上述过程不断重复就是我们说的 EventLoop (事件循
       环) 每一次循环操作称为一次tick.
 
-      macro task 宏任务  script( 整体代码)、setTimeout、setInterval、I/O、UI 交互事件、setImmediate(Node.js 环境)
-      micro task 微任务  Promise、MutaionObserver、process.nextTick(Node.js 环境)
+      **************************************************************************************************
+      macro task 宏任务：
+        script( 整体代码)、setTimeout、setInterval、I/O、UI 交互事件、setImmediate(Node.js 环境)、 postMessage
 
-      ** node环境中(依赖libuv引擎) process.nextTick会优先其他微任务先执行 **
+        * node.js里面setTimeout(fn, 0)会被强制改为setTimeout(fn, 1) *
+        * HTML5 里面setTimeout最小的时间限制是4ms                   *
 
-      ******************************************************************************
+      micro task 微任务：
+        Promise、MutaionObserver、process.nextTick(Node.js 环境)、 Object.observe
+
+      * node环境中(依赖libuv引擎) process.nextTick会优先其他微任务先执行 *
+
+      * 优质文章： https://juejin.cn/post/6844904100195205133
+
+      **************************************************************************************************
       1、最好的js循环动画写法
         function render (argument) {
           动画处理代码
@@ -139,10 +148,50 @@
             window.requestAnimationFrame(animloop);
         })();
 
-      2、
+      2、Mutation Observer 是在DOM4中定义的，用于替代 mutation events 的新API，它的不同于events的是，所有
+        监听操作以及相应处理都是在其他脚本执行完成之后异步执行的，并且是所有变动触发之后，将变动记录在数组中，
+        统一进行回调的，也就是说，当你使用observer监听多个DOM变化时，并且这若干个DOM发生了变化，那么observer
+        会将变化记录到变化数组中，等待所有变化都结束了，一次性的从变化数组中执行其对应的回调函数。
 
-******************************************************************************
-  DOM level 和 DOM事件
+        * Mutation events 是在 DOM3中定义，用于监听DOM树结构变化的事件
+        *
+        * 1、浏览器兼容性问题
+        *   IE9不支持Mutation Events; Webkit内核不支持DOMAttrModified特性;
+        *   DOMElementNameChanged和DOMAttributeNameChanged 在Firefox上不被支持。
+        * 2、性能问题
+        *   a.Mutation Events是同步执行的，它的每次调用，都需要从事件队列中取出事件，执行，然后事件队
+        *     列中移除，期间需要移动队列元素。如果事件触发的较为频繁的话，每一次都需要执行上面的这些步骤，
+        *     那么浏览器会被拖慢。
+        *   b.Mutation Events本身是事件，所以捕获是采用的是事件冒泡的形式，如果冒泡捕获期间又触发了其
+        *     他的MutationEvents的话，很有可能就会导致阻塞Javascript线程，甚至导致浏览器崩溃。
+
+        ************************************************************************************************
+        浏览器和Nodejs的Event Loop：
+        * JS所谓的“单线程”只是指主线程只有一个，并不是整个运行环境都是单线程
+        * JS的异步靠底层的多线程实现
+        * 不同的异步API对应不同的实现线程
+        * 异步线程与主线程通讯靠的是Event Loop
+        * 异步线程完成任务后将其放入任务队列
+        * 主线程不断轮询任务队列，拿出任务执行
+        * 任务队列有宏任务队列和微任务队列的区别
+        * 微任务队列的优先级更高，所有微任务处理完后才会处理宏任务
+        * Promise是微任务
+        * Nodejs的Event Loop跟浏览器的Event Loop不一样，他是分阶段的
+        * setImmediate和setTimeout(fn, 0)哪个回调先执行，需要看他们本身在哪个阶段注册的，如果在定时器回调或
+          者I/O回调里面，setImmediate肯定先执行。如果在最外层或者setImmediate回调里面，哪个先执行取决于当时机器状况。
+        * process.nextTick不在Event Loop的任何阶段，他是一个特殊API，他会优于其他微任务执行
+
+        ************************************************************************************************
+        Nodejs的Event Loop分阶段
+        * timers: 执行setTimeout和setInterval的回调
+        * pending callbacks: 执行延迟到下一个循环迭代的 I/O 回调
+        * idle, prepare: 仅系统内部使用
+        * poll: 检索新的 I/O 事件;执行与 I/O 相关的回调。事实上除了其他几个阶段处理的事情，其他几乎所有的异步都在这个阶段处理。
+        * check: setImmediate 在这里执行
+        * close callbacks: 一些关闭的回调函数，如：socket.on('close', ...)
+
+********************************************************************************************************
+  DOM level 和 DOM事件 * DOM 4 已发布 *
     1、W3C DOM标准（DOM分级）先后有三个版本 标准: 1 2 3 (个人感觉level译作标准 更合适)
     2、DOM标准正式形成前，有一些被广泛应用的规则，这就是我们通常所说的DOM level 0
 
