@@ -92,12 +92,14 @@
     * 1、webpack初始化compiler对象和注册插件
     * 2、编译的过程中插件主要是挂载一些回调函数到compiler的生命周期上，当执行到该阶段时触发（事件的发布订阅，
       继承自tapable）。
-    * 3、编译主要是以entry为入口，生成一个module对象，主要就是根据js代码生成ast语法树对象，分析语法树加载需
-      要的依赖 dependency，如果存在import依赖，就会生成新的module，直到所有依赖加载完毕。
+    * 3、编译主要是以entry为入口，生成module对象，根据js代码生成ast语法树对象，分析语法树加载需要的依赖
+      dependency，如果存在import依赖，就会生成新的module，直到所有依赖加载完毕。
     * 4、make阶段完成之后会进入seal阶段，生成chunk 。编译结束后调用 compiler.emitAssets 输出打包好的资源
 
     **********************************************************
-    * webpack懒加载的原理 import('moduleA').then(...) 异步加载 *
+    * webpack 懒加载的实现                                    *
+    * 1、import('moduleA').then(...) 异步加载                  *
+    * 2、require.ensure() 异步加载                             *
     **********************************************************
 
 **********************************************************************************************************
@@ -106,17 +108,87 @@
 
     Hot Module Replacement(HMR)在web应用运行时，无需刷新整个页面，实现对特定模块替换、添加或者删除的操作。
 
-    1、Webpack编译期，为需要热更新的 entry 注入热更新代码(EventSource通信)
-    2、页面首次打开后，服务端与客户端通过 EventSource 建立通信渠道，把下一次的 hash 返回前端
-    3、客户端获取到hash，这个hash将作为下一次请求服务端 hot-update.js 和 hot-update.json的hash
+    ****************************************************************************************************
+    *  主要是通过以下几种方式，来显著加快开发速度：
+    *
+    *  1、保留应用程序完全重新加载页面时会丢失的状态。
+    *  2、只更新变更内容，以节省宝贵的开发时间。
+    *  3、在源代码中 CSS/JS 修改时，立刻在浏览器中更新，这几乎相当于在浏览器 devtools 直接更改样式。
+    *****************************************************************************************************
+
+    如何运行：
+
+    一、在应用程序中
+    1、应用程序要求 HMR runtime 检查更新。
+    2、HMR runtime 异步地下载更新，然后通知应用程序。
+    3、应用程序要求 HMR runtime 应用更新。
+    4、HMR runtime 同步地应用更新。
+    你可以设置 HMR，以使此进程自动触发更新，或者你可以选择要求在用户交互时进行更新
+
+    *****************************************************************************************************
+    概念
+
+    runtime
+        runtime，以及伴随的 manifest 数据，主要是指：在浏览器运行过程中，webpack 用来连接模块化应用程序所需的所有代码。
+        它包含：在模块交互时，连接模块所需的加载和解析逻辑。包括：已经加载到浏览器中的连接模块逻辑，以及尚未加载模块的延
+        迟加载逻辑。
+
+    manifest
+        webpack 通过 manifest，可以追踪所有模块到输出 bundle 之间的映射。
+
+        当 compiler 开始执行、解析和映射应用程序时，它会保留所有模块的详细要点。这个数据集合称为 "manifest"，当完成打包
+        并发送到浏览器时，runtime 会通过 manifest 来解析和加载模块。
+
+        无论你选择哪种 模块语法，那些 import 或 require语句现在都已经转换为 __webpack_require__ 方法，此方法指向模块
+        标识符 (module identifier)。通过使用 manifest中的数据，runtime 将能够检索这些标识符，找出每个标识符背后对应的
+        模块。
+
+        通过使用内容散列(content hash)作为 bundle 文件的名称，可以更好地利用缓存。
+    **********************************************************************************************************
+    1、Webpack编译期，为需要热更新的 entry 注入热更新代码，也就是HMR Runtime代码
+    2、页面首次打开时，服务端与客户端通过 EventSource 建立通信渠道，把下一次的 hash 返回客户端
+
+      ********************************************************************************************************
+      * webpack-dev-server 通过 sockjs 使 浏览器端. 和 服务端. 建立 websocket 长连接 将 webpack 编译打包的各个
+      * 阶段的状态信息告知浏览器端，包括后续文件修改重新编译的信息。
+      *
+      * webpack-dev-server/client 端并不能够请求更新的代码，也不会执行热更模块操作，而把这些工作又交回给了 webpack。
+      *
+      * webpack/hot/dev-server 的工作就是根据 webpack-dev-server/client 传给它的信息以及 dev-server 的配置决定
+      * 是刷新浏览器呢还是进行模块热更新，没配置热更新就直接刷新页面。
+      ********************************************************************************************************
+
+    3、客户端获取到hash，这个hash将作为下一次请求服务端 hot-update.json 和 hot-update.js 的hash
     4、修改页面代码后，Webpack 监听到文件修改后，开始编译，编译完成后，发送 build 消息给客户端
-    5、客户端获取到hash，成功后客户端构造hot-update.js script链接，然后插入主文档
+
+      ********************************************************************************************************
+      * webpack-dev-middleware 调用 webpack 暴露的 API对代码变化进行监控
+      ********************************************************************************************************
+
+    5、客户端获取 hot-update.json（修改的chunks id 和 下次的 hash）和 hot-update.js，成功后客户端构造hot-update.js
+      script链接，然后插入主文档。
+
+      ********************************************************************************************************
+      * HotModuleReplacement.runtime 是客户端 HMR 的中枢，它接收到上一步传递给他的 hash 值，通过
+      * JsonpMainTemplate.runtime 向 server 端发送 Ajax 请求，服务端返回一个 json，该 json 包含了
+      * 所有要更新的模块的 hash 值，获取到更新列表后，该模块再次通过 jsonp 请求，获取到最新的模块代码。
+      ********************************************************************************************************
+
     6、hot-update.js 插入成功后，执行hotAPI 的 createRecord 和 reload方法，获取到 Vue 组件的 render方法，
       重新 render 组件， 继而实现 UI 无刷新更新。
 
+        ******************************************************************************************************
+        *  检查 hot update 的细节
+        *
+        *  变更过的module将被发往HMR runtime。 HMR runtime将试图应用这个hot update.首先runtime检查被更新的module是
+        *  否能够accept这个hot update.如果不能，则runtime继续检查required这个update module的module是否能够accept。
+        *  如果还不能accept,则继续bubble up往上冒泡，直到找到能够accept的module，或者直到app entry point，而这种情况
+        *  下，hot update将会fail掉，执行  live reload 浏览器刷新。
+        *******************************************************************************************************
+
     其他知识：
     1、HMR和热加载(live reload)的区别是：热加载是刷新整个页面。
-    2、谢谢
+    2、专栏文章 https://zhuanlan.zhihu.com/p/30669007
 
 
     ***********
@@ -290,5 +362,118 @@
          源代码的第一列
          names 数组中的第一个索引，也就是 console
 
-       *关联的技术： AST*
+       *关联的技术： AST（Abstract Syntax Tree）*
 **********************************************************************************************************
+    /*
+     * webpack性能调优
+       https://zhuanlan.zhihu.com/p/150731200
+     *
+     */
+    一、提高构建速度
+        1、缩小文件搜索范围
+        * a、通过exclude、include 缩小搜索范围
+          rules:[
+              {
+                  test:/\.js$/,
+                  loader:'babel-loader',
+                  // 只在src文件夹中查找
+                  include:[resolve('src')],
+                  // 排除的路径
+                  exclude:/node_modules/
+              }
+          ]
+        * b、resolve.modules:[path.resolve(__dirname,'node_modules')]避免层层查找
+
+          其中 resolve.modules会告诉webpack去哪些目录寻找第三方模块，如果不配置 path.resolve(__dirname,
+          'node_modules')，则会依次查找./node_module、../node_modules，一层一层网上找，这显然效率不高。
+
+        * c、对庞大的第三方模块设置 resolve.alias，使webpack直接使用库的min文件，避免库内解析
+            副作用是会影响Tree-Shaking
+
+          resolve.alias:{
+              'react':patch.resolve(__dirname, './node_modules/react/dist/react.min.js')
+          }
+
+        * c、 resolve.extensions ，减少文件查找
+
+          resolve.alias:{
+              'react':patch.resolve(__dirname, './node_modules/react/dist/react.min.js')
+          }
+
+        * d、module.noParse
+            防止 webpack 解析那些任何与给定正则表达式相匹配的文件。忽略的文件中 不应该含有 import,
+            require, define 的调用，或任何其他导入机制。忽略大型的 library 可以提高构建性能。
+
+          resolve.alias:{
+              'react':patch.resolve(__dirname, './node_modules/react/dist/react.min.js')
+          }
+
+        2、缓存之前构建过的js
+          如：
+          将Babel编译过的文件缓存起来，下次只需要编译更改过的代码文件即可，这样可以大幅度加快打包时间。
+          loader:'babel-loader?cacheDirectory=true'
+
+        3、提前构建第三方库
+          处理第三方库的方法有很多种，其中，Externals不够聪明，一些情况下会引发重复打包的问题；而
+          CommonsChunkPlugin 每次构建时都会重新构建一次 vendor；处于效率考虑还是考虑使用DllPlugin。
+
+          DLL全称Dynamic-link library，（动态链接库）。到底怎么个动态法。原理是将网页依赖的基础模块抽离
+          出来打包到dll文件中，当需要导入的模块存在于某个dll中时，这个模块不再被打包，而是去dll中获取，而且
+          通常都是第三方库。那么为什么能提升构建速度，原因在于这些第三方模块如果不升级，那么只需要被构建一次。
+
+        4、并行构建而不是同步构建
+          HappyPack和ThreadLoader作用是一样的，都是同时执行多个进程，从而加快构建速度。而Thread-Loader是
+          webpack4提出的。
+
+        5、采用Oneof
+        6、HMR 模块热替换
+    二、压缩打包体积
+        1、TreeShaking删除无用代码
+        * 依赖ES6的import、export模块化语法
+        * webpack.config.js 的 mode:'production'
+
+        2、压缩代码
+          // 配置说明：webpack4
+          module.exports = {
+              plugins:[
+                  // 压缩css
+                  new OptimizeCssAssetWebpackPlugin(),
+                  // 压缩html
+                  new HtmlWebpackPlugin({
+                        // html无所谓压缩,只是去掉空格和注释
+                        minify:{
+                          collapseWhitespace:true,
+                          removeComments:true,
+                        },
+                        template:'./src/index.html'
+                   })
+              ],
+              // 模式设置为生产环境就可以直接压缩js了
+              mode:'production'
+          }
+
+        3、代码分割实现按需加载
+        4、Scope Hoisting
+
+    三、优化运行速度
+        1、资源文件缓存
+          module.exports = {
+              // 单入口
+              entry : './src/js/index.js',
+              output : {
+                  filename : 'js/built.[contenthash:10].js',
+                  path: resolve(__dirname,'build')
+              },
+              plugins:[
+                  // 独立输出css代码
+                  new MiniCssExtractPlugin({
+                      filename:'css/built.[contenthash:10].css'
+                  }),
+              ]
+          }
+
+        2、预加载
+
+    四、优化开发体验
+        1、Dev-Server 自动刷新
+        2、sourceMap提高调试体验

@@ -18,7 +18,8 @@ export default new Router({
         {
             path: '/index',
             name: 'index',
-            component: resolve => require(['./views/Index.vue'], resolve)
+            component: () => import( /* webpackChunkName: "index" */ '../views/Home.vue')
+            // 实现懒加载，另注释内容不可省略 配合output.chunkFilename使用 chunkFilename: '[name].bundle.js',
         },
         {
             path: '/*',

@@ -7,7 +7,7 @@
     1、协和导诊
     测试：47.93.122.113服务器 lws/znxy-result http://demo.zuoshouyisheng.com:7804/xh
 
-    2、诊小助测试 ssh -q -l worker -p 22 192.168.0.207 密码 zsys@123456
+    2、罗氏项目 liweisheng@zuoshouyisheng.com  gitlab.123
 
     3、链接 113： ssh -p 60022 18513766119@39.107.52.197 -i liweisheng.rsa
 

@@ -490,7 +490,6 @@
     1、新的Vnode节点不存在并且老的Vnode存在，只调用销毁Vnode节点的Hook; 如果老的Vnode节点不存在，
       则直接调用新建函数生成节点。如果新老节点都存在并且通过sameVnode函数判断为true，则再进行diff操作，
       否则也直接去新建节点并替换。
-
       *************************************************************************
       function sameVnode (a, b) {
         return (
@@ -636,3 +635,75 @@
             prev = prevIndex[subArr[length]]
           }
         }
+
+************************************************************************************************************
+  /*
+   * vue2 vue3 双向绑定的原理
+   *
+   */
+  var person = {};
+  Object.defineProperties(person, {
+    age: {
+      defaultValue:11,
+      get:function(){
+        return this.defaultValue;
+      },
+      set:function(val){
+        this.defaultValue=val;
+        console.log("触发了set");
+      }
+    }
+  })
+  //修改属性的值时能够触发set
+  person.age =12 //触发了set
+  person.age // 12
+
+  //将属件的值设置为一个数组，当通过索引值修改数组的某一项或使用某些方法修改数组时不能触发方法
+  person.age =[2，3，4] // 触发了set
+  person.age[2]=5//未触发set
+  person.age // [2，3, 5] 数据已经改变
+  person.age.push(5)//未触发set
+  person.age // [2,3，5，5]
+
+  //将性的值设置为一个对象，当修改对象中某属性的值时无法触发set
+  person.age = { first: 1 } // 触发了set
+  person.age.first = 2 //未触发set
+
+
+  let obj = {};
+  let handler = {
+    get(target,property){
+      console.log(`${property} 被读取`);
+      return property in target ? target[property] :3:
+    },
+    set(target,property,value){
+      console.log(`${property}被设置为 ${value}`);
+      target[property]=value;
+      return true
+    }
+  }
+  let p = new Proxy(obj, handler);
+  p.name="tom" //name 被设置为tom
+  p.age;//age 被读取3
+
+  let q = new Proxy([[1,2,3], 2],handler);
+  q.length // length 被读取
+  q[1] // 1被读取
+  q[2] = 6 //2被设置为6
+  q.push(4) //3被设置为4
+  q // Proxy {0:1,1:2，2:6，3:4]
+
+************************************************************************************************************
+  /*
+   * 前端路由的两种实现原理
+   */
+  一、Hash模式
+  重点是 hashchange 事件
+
+  二、History 模式
+  history.pushState() 或 history.replaceState()
+
+  调用 history.pushState() 或 history.replaceState() 方法不会触发popstate事件，只有在做出浏览器动作时，才会触
+  发该事件，如用户点击浏览器的回退按钮（或者在Javascript代码中调用 history.back() 或者 history.forward()方法）
+
+************************************************************************************************************
