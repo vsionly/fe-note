@@ -40,7 +40,41 @@
 ****************************************************************************************
     /*
      * 实现call, apply同理
+       obj.myFun.call(db,'成都','上海')
+       obj.myFun.apply(db,['成都','上海'])
      */
+
+    Function.prototype.myCall = function() {
+      //obj即相当于上面的k
+      var [obj, ...args] = arguments;
+      console.log({arguments})
+
+      //this相当于上面的a
+      obj['fn'] = this;
+      //获取call第二个开始的参数
+
+      //相当于k.a, 即将a的this指向k
+      obj['fn'](...args);
+      delete obj['fn'];
+    }
+    function a(n){
+      console.log(this.m, n);
+    }
+    var k = {
+      m: 2
+    }
+    a.myCall(k, 1);
+
+    ****************************************************************************************
+    Function.prototype.myCall = function() {
+        let [context, ...args] = arguments
+        let funNane = Symbol('fn')
+        context[funNane] = this
+        context[funNane](...args)
+        delete context[funNane]
+    }
+
+    ****************************************************************************************
     Function.prototype.myOwnCall = function(context) {
         context = context || window;
         var uniqueID = "00" + Math.random();
@@ -67,6 +101,16 @@
         return result;
     }
 
+    var person = {
+        firstName: 'll',
+        fullName: function() {
+            return this.firstName
+        }
+    }
+    var person1 = {
+        firstName: "Bill",
+    }
+    person.fullName.apply(person1);
 ****************************************************************************************
 ****************************************************************************************
     instanceof的大致效果是：当左边是基本类型值时，一律返回false。 当左边是引用类型值时，如果
