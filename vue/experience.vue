@@ -3,6 +3,7 @@
 <el-form size="medium" label-position="left" label-width="90px" @submit.native.prevent>
     <el-button size="medium" round type="primary" @click="save">确定</el-button>
 </el-form>
+
 **********************************************************************************************************
 <!-- 上传图片、头像 配合el的上传组件 -->
 <el-upload :auto-upload="false"

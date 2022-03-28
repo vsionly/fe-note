@@ -1,0 +1,31 @@
+<snippet>
+    <content><![CDATA[
+<template>
+    <div>
+    </div>
+</template>
+<script>
+    export default {
+        name: '',
+        data() {
+            return {
+                data: ''
+            }
+        },
+        methods: {
+            fun() {
+
+            }
+        }
+    }
+</script>
+<style type="text/css" lang="stylus" scoped>
+
+</style>
+
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>vtm</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <scope>text.html.vue source.js.embedded.html source.js meta.export.js meta.object-literal.js</scope>
+</snippet>

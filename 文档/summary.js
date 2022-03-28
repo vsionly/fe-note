@@ -132,9 +132,13 @@
         * HTML5 里面setTimeout最小的时间限制是4ms                   *
 
       micro task 微任务：
-        Promise、MutaionObserver、process.nextTick(Node.js 环境)、 Object.observe
+        Promise、 MutaionObserver、 process.nextTick(Node.js 环境)、 Object.observe
 
       * node环境中(依赖libuv引擎) process.nextTick会优先其他微任务先执行 *
+
+      * MutaionObserver与事件有本质的不同：
+      * 事件是同步触发，也就是说DOM发生变动立刻会触发相应的事件；
+      * MutaionObserver是异步触发，DOM发生变动以后，并不会马上触发，而是要等到当前所有DOM操作都结束后才触发。
 
       * 优质文章： https://juejin.cn/post/6844904100195205133
 
@@ -721,6 +725,18 @@
     4、在 this.cache 对象中存储该组件实例并保存 key 值,之后检查缓存的实例数量是否超过 max 的设置值,超过则根据
       LRU 置换策略删除最近最久未使用的实例（即是下标为 0 的那个 key）
 
+  三、Vue 父子组件的生命周期顺序
+    1、加载渲染过程
+      父beforeCreate->父created->父beforeMount->子beforeCreate->子created->子beforeMount->子mounted->父mounted
+
+    2、子组件更新过程
+  　　 父beforeUpdate->子beforeUpdate->子updated->父updated
+
+    3、父组件更新过程
+  　　 父beforeUpdate->父updated
+
+    4、销毁过程
+  　　 父beforeDestroy->子beforeDestroy->子destroyed->父destroyed
 ************************************************************************************************************
   /*
    * 前端路由的两种实现原理

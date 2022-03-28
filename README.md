@@ -9,13 +9,14 @@
 
     2、罗氏项目 liweisheng@zuoshouyisheng.com  gitlab.123
 
-    3、链接 113： ssh -p 60022 18513766119@39.107.52.197 -i liweisheng.rsa
+    3、测试服： ssh -p 60022 18513766119@59.110.241.175 -i liweisheng.rsa
+      连接命令中的“39.107.52.197”修改为 “kqlohvgjnh-public.bastionhost.aliyuncs.com”或 “59.110.241.175”即可
 
     4、 kangfuzix__5304xx@2014xx (正式）
 
     5、开放平台 a1234567XX
 
-    6、公众号 3c85d77bd8bd92480c2cfcb1b2c759cd
+    6、scrm 测试 scrmtest   密码 scrm123    代码目录：/home/scrmtest/mochat
 
 ### 开发快捷方式
     1、本机地址 http://192.168.0.148
