@@ -441,8 +441,11 @@
           实现：
           1、保证引用的模块都是ES6规范的
           2、项目中，注意要把babel设置module: false，避免babel将模块转为CommonJS规范
-          3、webpack4 以上版本中，在 package.json 中定义 sideEffect: false，这也是为了避免出现 import xxx 导致
-            模块内部的一些函数执行后影响全局环境，却被去除掉的情况。
+          3、webpack4 以上版本中，在 package.json 中定义 sideEffect: false，意思是对所有模块都shaking
+            为了避免误删需要的代码，如 import 'index.css' 还有一些模块引入后会影响全局环境，可以如下配置
+            sideEffect: [
+                '*.css'
+            ]
           4、使用 mode 为 "production" 的配置项以启用更多优化项，包括压缩代码与 tree shaking。
 
           对于深层的依赖，可以使用 webpack-deep-scope-analysis-plugin 分析更底层的引用，是否被真正使用。
