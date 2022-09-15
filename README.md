@@ -25,19 +25,6 @@
     1、log平台 http://211.154.163.97:8000/insights?insight=TRENDS&interval=day&display=ActionsLineGraph&properties=%5B%5D&filter_test_accounts=false
     name@zuoshouyisheng.com  lwshx9-5xx
 
-### Git 命令
-```git
-    git branch --set-upstream master origin/master
-```
-
-    ssserver -c /etc/shadowsocks.json -d start
-
-    https://kiwivm.64clouds.com/main-exec.php?mode=extras_shadowsocks
-    liwshxxx@126.com  lwsh19-5xx lwsh8=xx
-    144.34.165.74  umkN3ecA9n2L
-
-    https://kiwivm.64clouds.com/main-exec.php?mode=blacklistcheck 检测ip被封
-    https://bwh81.net/ipchange.php 更换ip
 
 ### 规划
 

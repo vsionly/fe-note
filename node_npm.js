@@ -1,3 +1,12 @@
+/*
+ *  node 版本管理
+ *
+ */
+安装node:  nvm install v1.v2.v3 v2、v3可省略
+查看本地node版本  nvm ls
+
+********************************************************************************************
+
 `
 npm start === npm run start
 npm stop === npm run stop
