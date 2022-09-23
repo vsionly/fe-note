@@ -12,6 +12,10 @@ export default {
             data: ''
         }
     },
+    // 箭头函数写法更简洁
+    data: () => ({
+      activeInd: 0 // 是否内部活动
+    }),
     mixins: [aidMix],
     methods: {
         fun() {

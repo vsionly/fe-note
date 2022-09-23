@@ -8,7 +8,7 @@ const files = fs.readdirSync('./img');
 console.log(files)
 files.map((v, k) => {
     console.log(v, k)
-    fs.rename(`./img/${v}`, `./img/judge${k}.png`, (err) => {
+    fs.rename(`./img/${v}`, `./img/topic${k}.png`, (err) => {
         if (err) throw err
         console.log('重命名完成')
     });
