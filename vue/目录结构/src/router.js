@@ -3,6 +3,13 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+// router 3.2 next() 重定向 会报错 这是解决方法
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
+
 export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
@@ -60,6 +67,30 @@ export default new Router({
 router.beforeEach((to, from, next) => {
   if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
   else next()
+})
+
+router.beforeEach(async (to, from, next) => {
+  console.log(to.name, from.name, 222)
+  // 不需要登陆就能看的页面
+  if (['home', 'topic', 'login'].includes(to.name)) {
+    next()
+
+  // 需要登陆才能看的页面
+  } else {
+    // 登录的心跳接口 随时检测登录是否有效
+    const valid = await tokeninfo().then(res => {
+      console.log(res, 111)
+      return true
+    }).catch(err => {
+      return err.code !== -100 // false 登录状态失效
+    })
+    if (!valid) {
+      // 将用户重定向到登录页面
+      from.name !== 'login' ? next({ name: 'login' }) : next(false)
+    } else {
+      next()
+    }
+  }
 })
 
 // 全局解析守卫 导航被确认之前，同时在所有组件内守卫和异步路由组件被解析之后，解析守卫就被调用。

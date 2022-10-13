@@ -37,6 +37,7 @@ instance.interceptors.response.use(res => {
         flag = true
         if (res.data.errno === 100){
             vm.$message.error('登录状态已失效，请重新登陆！')
+            router.push('login') // 或者
             vm.$router.push('login')
         }
         setTimeout(() => {

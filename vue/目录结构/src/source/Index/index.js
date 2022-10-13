@@ -6,6 +6,12 @@ export default {
             data: ''
         }
     },
+    watch: {
+        $route: function (val, oldVal) {
+            console.log(val, oldVal)
+            this.activeTab = val.name
+        }
+    },
     created() {
         this.id = this.$route.query.id
     },
