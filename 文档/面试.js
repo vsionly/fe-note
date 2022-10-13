@@ -61,3 +61,34 @@
 
     1、了解serverless、faas、wasm
     2、知道mui、element ui等ui组件库部分组件的实现原理，对未使用到的组件也能通过读其源码研究他们的实现原理
+
+
+    1、个人介绍：从年龄、工作年限、学历、最近2、3年做过的项目情况
+      你好 面试官  我叫李伟生 来自山东潍坊 毕业于青岛理工大学
+    2、具体的VUE项目有哪些功能、每个功能有哪些模块，自己做的哪个功能模块？
+    3、某个功能模块的页面布局（页面设计图）是什么样的？代码是怎么实现？
+    4、编译打包时不同环境是怎么区分相同变量的不同值的？原理是什么？底层是怎么实现的?
+      在node中，有全局变量process表示的是当前的node进程。
+      process.env包含着关于系统环境的信息
+      DefinePlugin
+      vue cli3 创建的项目
+      "dev": "vue-cli-service serve", //本地开发运行，会把process.env.NODE_ENV设置为'development'
+      "build": "vue-cli-service build", //默认打包模式，会把process.env.NODE_ENV设置为'production'
+
+    5、iframe(跨端解决方案)使用过吗？使用iframe怎么进行通信？
+      子级页面调用父级页面 window.parent.父级页面方法(args)
+      document.getElementById("iframeID").contentWindow.子级页面方法(args)
+
+      window.postMessage()  使用origin和source属性来检查消息的发送者的身份
+
+    6、自定义组件需要定义哪些文件？怎么传递参数？如果要定义成样式可以变化的，应该怎么定义？
+      load.vue 和 load.js
+      load.js 核心是 引入load.vue 并实现  install（对象写法）或者 一个函数（函数写法） 它会被作为 install 方法
+      install: function (Vue) {
+        Vue.component('loading', loadCpt)
+      }
+
+    7、使用过哪些组件库？
+    8、是否有动画效果经验？轮播图平滑切换效果应该怎么实现？
+    9、Elenment-UI的form表单对某一个单独的字段进行校验，点击按钮手工进行校验？代码怎么实现？
+    10、Elenment-UI的表格自定义过滤应该怎么实现？

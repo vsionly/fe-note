@@ -18,6 +18,19 @@
 
     6、scrm 测试 scrmtest   密码 scrm123    代码目录：/home/scrmtest/mochat
 
+    7、宝石花测试环境
+    http://123.57.189.225/saber/#/login
+
+    登陆测试服务器
+    windows远程连接工具 输入ip 39.105.141.215:63389
+
+    *选择保存登陆信息
+
+    用户名 yygsYF
+    密码   Jfb9PX@g?u9#e8asuP7AEKrFBuT}vCkH
+
+    进入远程机器连接界面 输入二次验证 密码
+
 ### 开发快捷方式
     1、本机地址 http://192.168.0.148
 

@@ -32,7 +32,7 @@
 ******************************************************************************
   javascript
     1、Scope 作用域
-      在js中可以理解为程序执行的当前环境，又称为上下文。 The current context of execution.
+      在js中可以理解为程序执行的当前环境，又称为上下文。 The current context of execution。
       作用域有层级的概念，子作用域可以访问父作用域，反之则不行。 Scopes can also be layered in a hierarchy
 
     2、closure 闭包
@@ -388,8 +388,8 @@
             (slots.default || (slots.default = [])).push(child)
           }
           ...
-          return slots
         }
+        return slots
       }
 
     **************************************************************************
@@ -439,7 +439,7 @@
         1、vue2中需要 new Vue()来创建根实例并进行数据和方法的初始化；而vue3中则直接使用createApp来
           创建对象，去掉了Vue 构造函数，避免非必要功能集成，减小体积。
         2、Vue3 使用 Proxy代理 取代 Vue2的 Object.defineProperty劫持，且响应式模块拆出，可单独使
-          用，即reactivity
+          用，即reactive
         3、Composition Api 使得组件化 更加内聚，将零散分布的逻辑组合在一起，也可以将单独的功能逻辑拆
           分成单独的文件。在写法上更贴近于react的纯函数思想
 

@@ -364,7 +364,7 @@
      *
      */
     一、提高构建速度
-        1、缩小文件搜索范围
+        1、缩小文件搜索范围（如合理配置 resolve）
         * a、通过exclude、include 缩小搜索范围
           rules:[
               {
@@ -407,7 +407,8 @@
           将Babel编译过的文件缓存起来，下次只需要编译更改过的代码文件即可，这样可以大幅度加快打包时间。
           loader:'babel-loader?cacheDirectory=true'
 
-        3、提前构建第三方库
+        3、提前构建第三方库 利用dllplugin抽离基础模块 提高打包速度
+
           处理第三方库的方法有很多种，其中，Externals不够聪明，一些情况下会引发重复打包的问题；而
           CommonsChunkPlugin 每次构建时都会重新构建一次 vendor；处于效率考虑还是考虑使用DllPlugin。
 
@@ -415,12 +416,60 @@
           出来打包到dll文件中，当需要导入的模块存在于某个dll中时，这个模块不再被打包，而是去dll中获取，而且
           通常都是第三方库。那么为什么能提升构建速度，原因在于这些第三方模块如果不升级，那么只需要被构建一次。
 
-        4、并行构建而不是同步构建
+        4、并行构建而不是同步构建 HappyPack、ThreadLoader、parallel-webpack
           HappyPack和ThreadLoader作用是一样的，都是同时执行多个进程，从而加快构建速度。而Thread-Loader是
           webpack4提出的。
 
-        5、采用Oneof
-        6、HMR 模块热替换
+          a.多进程、多实例构建
+          b.多进程并行压缩代码
+
+          ******************************************************************************************************
+          *  thread-loader(官方推荐)
+          *  原理：每次 webpack 解析一个模块，thread-loader 会将它及它的依赖分配给 worker 线程中。
+          *
+          *  parallel-webpack
+          *  原理：parallel-webpack允许您并行运行多个Webpack构建，从而将工作分散到各个处理器上，从而有助于显着加快
+          *  构建速度。
+          *
+          *  HappyPack
+          *  原理：每次 webapck 解析一个模块时，HappyPack 会将它及它的依赖分配到worker线程中。
+          *  提示：由于HappyPack 对file-loader、url-loader 支持的不友好，所以不建议对该loader使用。
+          *
+          *******************************************************************************************************
+
+          * vue-cli3构建的项目，会自动开启多线程打包。
+
+        5、对图片资源提前压缩，利用在线图片压缩网站，或者在webpack中配置
+
+        6、利用分析工具分析打包信息
+          a、使用webpack内置得stats分析构建的统计信息
+            vue-cli3搭建的项目工程  "build:stats": "vue-cli-service build --mode prod --json > stats.json"
+
+          b、使用speed-measure-webpack-plugin进行速度分析
+
+          c、使用webpack-bundle-analyzer进行体积分析
+
+            // 使用
+            const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+            module.exports = {
+              plugins: [
+                new BundleAnalyzerPlugin()
+              ]
+            }
+            构建完成后，会在'http://127.0.0.1:8888'展示相关文件大小。按照提示就可以分析依赖的第三方模块文件大
+            小和业务里面的组件代码大小。
+
+        7、及时更新node、npm、yarn的版本
+
+        8、在尽可能少的模块上应用loader 如 剔除 node_modules 文件夹下的包
+
+        9、保证plugin的精简（少用）并保证plugin的可靠性（如写的代码严谨、执行效率高等），尽量使用官方推荐的plugin
+          开发模式下 不用代码压缩的plugin
+          生产模式下 不用生成sourcemap的plugin（视需求而定 有的可能要求线上要开启 sourcemap 但一般不会）
+
+        10、 控制包文件的大小 不要引入无用的代码
+
     二、压缩打包体积
         1、Tree Shaking 删除无用代码
         * 依赖ES6的import、export模块化语法
@@ -516,6 +565,8 @@
         1、Dev-Server 自动刷新
         2、sourceMap提高调试体验
 
+    vue-cli3构建项目的过程中，vue-cli3本身其实也做了很多优化，上面的优化手段vue-cli3这个工具其实已经帮我们做过了，
+    我们就不用重复配置了
 **********************************************************************************************************
     require和import的区别
     1、出现的时间点不同
