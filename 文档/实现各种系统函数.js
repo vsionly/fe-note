@@ -17,9 +17,10 @@
         emptyObj.constructor = constructor;
         // 关联 __proto__ 到 constructor.prototype
         emptyObj.__proto__ = constructor.prototype;
-        // 将构造函数的 this 指向返回的对象
 
+        // 将构造函数的 this 指向返回的对象
         let resultObj = constructor.apply(emptyObj, arguments);
+
         // 返回类型判断, 如果是对象，则返回构造函数返回的对象
         if (typeof resultObj === "object") {
             return resultObj
