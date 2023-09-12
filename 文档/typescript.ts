@@ -272,4 +272,16 @@ TS中的数据类型
 
 void
 ******************************************************************************
+ts中 9 种常用的TypeScript程序类型
+
+  ReadOnly<Type> 得到一个和Type类型属性相同但是全部只读的新类型
+  Partial<Type> 将Type类型定义的所有属性都修改为可选。
+  Rquied<Type> 构造一个类型，该类型由设置为 Type 的所有属性组成。
+  Record<Key, Type> 构造一个对象类型，其属性键为Keys，属性值为Type。
+  Pick<Type, Keys> 从Type中选取一组属性Keys来构造一个新类型。
+  Omit<Type, Keys> 从Type中选取所有属性Type然后删除Keys来构造类型。
+  Exclude<UnionType, ExcludedMembers>  从联合类型UnionType中排除ExcludedMembers联合类型的所有成员来构造类型。
+  Parameters<typeof fnName> 从函数类型 Type 的参数中使用的类型构造元组类型。
+  ReturnType<typeof fnName> 构造一个由函数 Type 的返回类型组成的类型。
+
 ******************************************************************************
