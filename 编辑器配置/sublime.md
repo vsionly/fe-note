@@ -27,6 +27,7 @@
        修改git配置 在拉取代码时 不转换断行符git config --global core.autocrlf false
        编辑器也要修改为unix
        TortoiseGit 修改配置文件 core下面的autocrlf = false
+   修改st view 设置中的 line-endings
 ****************************************************************************************************
    在安装插件之前，需要让sublime安装Package Control。首先，按CTRL+`，打开控制台     粘贴下面的代码，之后回车
    import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), 'wb').write(urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ','%20')).read())
