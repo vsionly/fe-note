@@ -1,4 +1,9 @@
-1、设置分支关联 git branch --set-upstream-to=origin/dev dev
+1、设置分支关联 
+     git branch --set-upstream-to=origin/dev dev
+     
+   如果你的本地分支名和远程分支名一致，可以简写为。这里的-u是--set-upstream-to的简写形式。
+     git branch -u origin/my-branch
+
 2、拉取远程分支 git fetch origin 分支名
 3、如果本地新建了一个分支 branch_name，但是在远程没有 git push --set-upstream origin branch_name
 
