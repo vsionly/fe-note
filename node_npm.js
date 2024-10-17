@@ -2,8 +2,6 @@
  *  node 版本管理
  *
  */
-安装node:  nvm install v1.v2.v3 v2、v3可省略
-查看本地node版本  nvm ls
 
 ********************************************************************************************
 
@@ -42,6 +40,9 @@ npx browserslist
     NODEMAILER nodejs 发送邮件
 *********************************************************************************************
 
+    安装node:  nvm install v1.v2.v3 v2、v3可省略
+    查看本地node版本  nvm ls
+
     nvm install stable ## 安装最新稳定版 node
     nvm install <version> ## 安装指定版本
     nvm uninstall <version> ## 删除已安装的指定版本
@@ -53,4 +54,3 @@ npx browserslist
     nvm unalias <name> ## 删除已定义的别名
     nvm reinstall-packages <version> ## 在当前版本 node 环境下，重新   全局安装指定版本号的 npm 包
     nvm alias default [node版本号] ##设置默认版本
-

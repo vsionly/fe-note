@@ -13,6 +13,15 @@
     git branch --set-upstream master origin/master 将本地的master分支跟远程的 master 关联
 ```
 
+#### 如果您不希望 Git 跟踪某个文件的变化，但又不想将文件添加到 .gitignore 文件中
+  git update-index --assume-unchanged path/to/file.txt
+  或者 
+  git update-index --skip-worktree   保留文件的版本历史
+
+  恢复  
+  git update-index --no-assume-unchanged path/to/file.txt
+  git update-index --no-skip-worktree path/to/file.txt
+
 ### 代码中的换行符
 
     /*

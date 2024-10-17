@@ -50,6 +50,7 @@ module.exports = {
         "no-constant-condition": 2,
         // 禁止在正则表达式中使用控制字符 ：new RegExp("\x1f")
         "no-control-regex": 2,
+        
         // 数组和对象键值对最后一个逗号， never参数：不能带末尾的逗号, always参数：必须带末尾的逗号，
         // always-multiline：多行模式必须带逗号，单行模式不能带逗号
         "comma-dangle": [1, "never"],
